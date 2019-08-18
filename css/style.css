@@ -1,0 +1,43 @@
+/* 
+    uniform circular motion demo! ()cleoold
+*/
+
+html, body {
+    height: 100%;
+}
+
+body {
+    text-align: center;
+}
+
+div#container {
+    width: 40%;
+    background-color: antiquewhite;
+    margin: 0 auto;
+    border: 5px solid black;
+}
+
+@media only screen and (max-width:600px) {
+    div#container {
+        width: 90%;
+    }
+}
+
+div#origin {
+    position: relative;
+    background-color: blueviolet;
+    width: 1%;
+    height: 1%;
+    border: 1px solid black;
+    border-radius: 7px;
+    padding: 0;
+}
+
+div#moving-obj {
+    position: relative;
+    background-color: coral;
+    width: 20px;
+    height: 20px;
+    margin-top: -20px;
+    margin-left: -10px;
+}

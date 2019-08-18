@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<head>
+    <!--uniform circular motion demo! ()cleoold-->
+
+    <title>circular motion demo</title>
+    <meta name="description" content="circular motion demo">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style.css" type="text/css" />
+</head>
+
+
+<body>
+    <header>
+        <h1>Uniform circular motion demo</h1>
+    </header>
+    <div id="grand-container">
+        <div id="info-container">
+            <p>
+                &nbsp;container width: <input type="text" id="container-width" autocomplete="off" />
+            </p>
+            <p>
+                container height: <input type="text" id="container-height" autocomplete="off" />
+            </p>
+            <p>
+                moving box X-axis: <input type="text" id="box-x" autocomplete="off" />
+            </p>
+            <p>
+                moving box Y-axis: <input type="text" id="box-y" autocomplete="off" />
+            </p>
+            <p>
+                set period(sec): <input type="text" id="set-period" autocomplete="off" />
+                <input type="button" id="set-period-go" value="Go!" />
+            </p>
+        </div>
+        <div id="container">
+            <div id="origin"></div>
+            <div id="moving-obj"></div>
+        </div>
+    </div>
+    <footer>
+        <br />Still working in progress! (c) cleoold <a href="https://github.com/cleoold/uniform_circular_motion" target="_blank">Github</a>
+    </footer>
+</body>
+
+<script src="./js/movingbox.js"></script>
