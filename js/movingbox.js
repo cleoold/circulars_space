@@ -4,10 +4,10 @@
 
 var container = document.querySelector('div#container')
 var containerWidthText = document.querySelector('#container-width')
-var containerHeightText = document.querySelector('#container-height')
 var movingBoxXText = document.querySelector('#box-x')
 var movingBoxYText = document.querySelector('#box-y')
 var setPeriodText = document.querySelector('#set-period')
+var setRadiusText = document.querySelector('#set-radius')
 
 var containerLength = 0
 
@@ -19,7 +19,6 @@ function onChangeContainerSize(e) {
     containerLength = parseFloat(window.getComputedStyle(container).width)
     var containerLengthPx = floatToPx(containerLength)
     container.style.height = containerLengthPx
-    containerHeightText.value = containerLengthPx
     containerWidthText.value = containerLengthPx
 
     var origin = document.querySelector('div#origin')
@@ -29,18 +28,24 @@ function onChangeContainerSize(e) {
 window.addEventListener('load', onChangeContainerSize)
 window.addEventListener('resize', onChangeContainerSize)
 
-function Block(offset, period) {
-    this.offset = offset
-    this.period = period
-    this.omega = () => 2 * Math.PI / this.period
-    this.radius = () => containerLength / 2
+function Block(initOffset = 0, initPeriod = 0, initRadius = 0) {
+    this.offset = initOffset
+    this.initPeriod = initPeriod
+    this.initRadius = initRadius
+    this.period = (t) => this.initPeriod
+    this.omega = (t) => 2 * Math.PI / this.period(t)
+    this.radius = (t) => this.initRadius
     this.yieldX = (t) => this.radius() * Math.cos(this.omega() * t - this.offset)
     this.yieldY = (t) => this.radius() * Math.sin(this.omega() * t - this.offset)
 }
 
-var block1 = new Block(0, 0)
+var block1 = new Block()
 var timer = 0
 var blockElement = document.querySelector('div#moving-obj')
+window.addEventListener('load', (e) => {
+    setPeriodText.value = 5
+    setRadiusText.value = containerLength / 4
+})
 
 setInterval(() => {
     timer += 40
@@ -53,6 +58,15 @@ setInterval(() => {
     movingBoxYText.value = y
 }, 40)
 
-document.querySelector('#set-period-go').addEventListener('click', () => {
-    block1.period = setPeriodText.value
+document.querySelector('#set-attr-go').addEventListener('click', (e) => {
+    if (Math.abs(parseFloat(setRadiusText.value)) <= containerLength / 2) {
+        block1.initPeriod = parseFloat(setPeriodText.value)
+        block1.initRadius = parseFloat(setRadiusText.value)
+    } else {
+        let o = setRadiusText.style.backgroundColor
+        setRadiusText.style.backgroundColor = '#c98d8d'
+        setTimeout(() => {
+            setRadiusText.style.backgroundColor = o
+        }, 400)
+    }
 })

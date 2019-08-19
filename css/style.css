@@ -6,15 +6,60 @@ html, body {
     height: 100%;
 }
 
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, 
+pre, abbr, acronym, address, big, cite, code, del, dfn, em, font, ins, kbd, q, s, 
+samp, small, strike, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, 
+label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
+    color: aliceblue;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+    color: burlywood;
+}
+
 body {
     text-align: center;
+    background-color: #530a80
+}
+
+p input[type="text"] {
+    background-color: #a06bc2;
+    border: none;
+    color: white;
+    font-size: .9em;
+    padding-left: .25em;
+    padding-right: .25em;
+    transition: background-color .7s cubic-bezier(0.001, 0.610, 0.355, 1);
+    -webkit-transition: background-color .7s cubic-bezier(0.001, 0.610, 0.355, 1);
+}
+
+p input[type="button"] {
+    background-color: #d1c736;
+    border: none;
+    padding: .25em;
+}
+
+p input[type="button"]:hover {
+    background-color: #aba555;
+    transition: background-color .1s ease;
+    -webkit-transition: background-color .1s ease;
+}
+
+p input[type="button"]:active {
+    background-color: #69663f;
+    color: #b0b0b0;
+}
+
+p.custom-attr input[type="text"] {
+    width: 60px;
 }
 
 div#container {
     width: 40%;
-    background-color: antiquewhite;
+    background-color: #a06bc2;
     margin: 0 auto;
-    border: 5px solid black;
+    border: 5px solid #b3b3b3;
 }
 
 @media only screen and (max-width:600px) {
@@ -35,7 +80,7 @@ div#origin {
 
 div#moving-obj {
     position: relative;
-    background-color: coral;
+    background-color: yellow;
     width: 20px;
     height: 20px;
     margin-top: -20px;
