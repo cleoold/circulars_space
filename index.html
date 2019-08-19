@@ -3,42 +3,50 @@
 <head>
     <!--uniform circular motion demo! ()cleoold-->
 
-    <title>circular motion demo</title>
+    <title>Circular Motion Demo</title>
     <meta name="description" content="circular motion demo">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/style.css" type="text/css" />
+    <link rel="icon" href="./ahp.png" sizes="32x32">
 </head>
 
 
 <body>
     <header>
-        <h1>Uniform circular motion demo</h1>
+        <h1><del>Uniform</del> circular motion demo</h1>
     </header>
-    <div id="grand-container">
-        <div id="info-container">
+    <article class="grand-container">
+        <p>
+            container width: <input type="text" class="container-width" autocomplete="off" />
+        </p>
+        <div id="info-container-1" class="info-container">
+            <h3>Block one</h3>
             <p>
-                container width: <input type="text" id="container-width" autocomplete="off" />
+                moving box X-axis: <input type="text" class="box-x" autocomplete="off" />
             </p>
             <p>
-                moving box X-axis: <input type="text" id="box-x" autocomplete="off" />
-            </p>
-            <p>
-                moving box Y-axis: <input type="text" id="box-y" autocomplete="off" />
+                moving box Y-axis: <input type="text" class="box-y" autocomplete="off" />
             </p>
             <p class="custom-attr">
-                set period(sec): <input type="text" id="set-period" autocomplete="off" />
-                radius(px): <input type="text" id="set-radius" autocomplete="off" />
-                <input type="button" id="set-attr-go" value="Go!" />
+                set period(sec): <input type="text" class="set-period" autocomplete="off" />
+                radius(px): <input type="text" class="set-radius" autocomplete="off" />
+                <br />
+                T linear Δ(sec): <input type="text" class="set-period-change" autocomplete="off" />
+                R linear Δ(px): <input type="text" class="set-radius-change" autocomplete="off" />
+            </p>
+            <p>
+                <input type="button" class="set-attr-go" value="Go!" />
             </p>
         </div>
         <div id="container">
             <div id="origin"></div>
-            <div id="moving-obj"></div>
+            <div id="moving-obj-1" class="moving-obj"></div>
         </div>
-    </div>
+    </article>
     <footer>
-        <br />Still working in progress! (c) cleoold <a href="https://github.com/cleoold/uniform_circular_motion" target="_blank">Github</a>
+        <br />Still working in progress! (c) cleooldsaty. Report bug: <a href="https://github.com/cleoold/uniform_circular_motion"
+            target="_blank">Github</a>
     </footer>
 </body>
 

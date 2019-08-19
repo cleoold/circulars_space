@@ -4,6 +4,9 @@
 
 html, body {
     height: 100%;
+    background-color: #530a80;
+    transition: background-color 4s ease;
+    -webkit-transition: background-color 4s ease;
 }
 
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, 
@@ -20,11 +23,10 @@ a {
 
 body {
     text-align: center;
-    background-color: #530a80
 }
 
 p input[type="text"] {
-    background-color: #a06bc2;
+    background-color: rgba(255, 255, 255, .3);
     border: none;
     color: white;
     font-size: .9em;
@@ -38,6 +40,8 @@ p input[type="button"] {
     background-color: #d1c736;
     border: none;
     padding: .25em;
+    width: 15em;
+    height: 2em;
 }
 
 p input[type="button"]:hover {
@@ -47,18 +51,20 @@ p input[type="button"]:hover {
 }
 
 p input[type="button"]:active {
-    background-color: #69663f;
+    background-color: #7a774d;
     color: #b0b0b0;
 }
 
 p.custom-attr input[type="text"] {
     width: 60px;
+    margin-bottom: .7em;
 }
 
 div#container {
     width: 40%;
-    background-color: #a06bc2;
+    background-color: rgba(255, 255, 255, .3);
     margin: 0 auto;
+    padding: 0;
     border: 5px solid #b3b3b3;
 }
 
@@ -74,15 +80,17 @@ div#origin {
     width: 1%;
     height: 1%;
     border: 1px solid black;
-    border-radius: 7px;
+    border-radius: 40%;
     padding: 0;
 }
 
-div#moving-obj {
+div.moving-obj {
     position: relative;
-    background-color: yellow;
+    background-color: rgba(230, 192, 87, .9);
+    border-radius: 50%;
     width: 20px;
     height: 20px;
-    margin-top: -20px;
-    margin-left: -10px;
+    margin-top: -15px;
+    margin-left: -5.4px;
+    padding: 0;
 }
