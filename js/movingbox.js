@@ -193,6 +193,8 @@ function BlockInMotion(id) {
         setDefaultValsForCircle();
         block1 = new Block();
         enterBtn.value = 'Go!';
+        movingBoxXText.value = null;
+        movingBoxYText.value = null;
     });
 }
 

@@ -17,31 +17,32 @@
         <h1><del>Uniform</del> circular motion demo</h1>
     </header>
     <article class="grand-container">
-        <p>
-            container width: <input type="text" class="container-width" autocomplete="off" />
-        </p>
+        <div class="shared-info-container">
+            <span>container width </span><input type="text" class="container-width" autocomplete="off" readonly />
+        </div>
         <div id="info-container-1" class="info-container">
             <h3>Block one</h3>
-            <p>
-                <span>moving box X-axis: </span><input type="text" class="box-x" autocomplete="off" />
-            </p>
-            <p>
-                <span>moving box Y-axis: </span><input type="text" class="box-y" autocomplete="off" />
-            </p>
-            <p class="custom-attr">
-                <span>set color: </span><input type="text" class="set-color" autocomplete="off" />
-                <span>set size(px): </span><input type="text" class="set-size" autocomplete="off" />
-                <br />
-                <span>set period(sec): </span><input type="text" class="set-period" autocomplete="off" />
-                <span>radius(px): </span><input type="text" class="set-radius" autocomplete="off" />
-                <br />
-                <span>T Δ(sec/sec): </span><input type="text" class="set-period-change" autocomplete="off" />
-                <span>R Δ(px/sec): </span><input type="text" class="set-radius-change" autocomplete="off" />
-            </p>
-            <p>
+            <div class="box-label"><span>moving box X-axis</span></div>
+            <input type="text" class="box-x" autocomplete="off" placeholder="leave this be :-)" readonly />
+            <div class="box-label"><span>moving box Y-axis</span></div>
+            <input type="text" class="box-y" autocomplete="off" placeholder="leave this be :-)" readonly />
+            <div class="box-label"><span>color</span></div>
+            <input type="text" class="set-color" autocomplete="off" />
+            <div class="box-label"><span>size(px)</span></div>
+            <input type="text" class="set-size" autocomplete="off" />
+            <div class="box-label"><span>period(sec)</span></div>
+            <input type="text" class="set-period" autocomplete="off" />
+            <div class="box-label"><span>radius(px)</span></div>
+            <input type="text" class="set-radius" autocomplete="off" />
+            <div class="box-label"><span>T Δ(sec/sec)</span></div>
+            <input type="text" class="set-period-change" autocomplete="off" />
+            <div class="box-label"><span>R Δ(px/sec)</span></div>
+            <input type="text" class="set-radius-change" autocomplete="off" />
+
+            <div class="buttons">
                 <input type="button" class="set-attr-go" value="Go!" />
                 <input type="button" class="set-attr-reset" value="Reset" />
-            </p>
+            </div>
         </div>
         <div id="container">
             <div id="origin"></div>
@@ -49,8 +50,8 @@
         </div>
     </article>
     <footer>
-        <br />Still working in progress! (c) cleooldsaty. Report bug: <a href="https://github.com/cleoold/uniform_circular_motion"
-            target="_blank">Github</a>
+        <br />Still working in progress! (c) cleooldsaty. Report bug: <a
+            href="https://github.com/cleoold/uniform_circular_motion" target="_blank">Github</a>
     </footer>
 </body>
 
