@@ -64,10 +64,12 @@ function Block(initOffset = 0, initPeriod = 0, initRadius = 0) {
 
 // moving block area
 
+var intervals = 40;
+
 function BlockInMotion(id) {
     var block1 = new Block();
-    const intervals = 40;
     const blockElement = document.querySelector(`div#moving-obj-${id}`);
+    const blockPrjElement = document.querySelector(`div#moving-obj-prj-${id}`);
     const movingBoxXText = document.querySelector(`#info-container-${id} .box-x`);
     const movingBoxYText = document.querySelector(`#info-container-${id} .box-y`);
     const setColorText = document.querySelector(`#info-container-${id} .set-color`);
@@ -94,11 +96,14 @@ function BlockInMotion(id) {
 
         // this value should be 'corrected' like below in rendering, but since this is default case
         // where the moving obj is always 20px, just set the percentage. users will not notice
-        blockElement.style.left = '49.3%';
-        blockElement.style.top = '47.8%';
+        blockElement.style.left = '49.1%';
+        blockElement.style.top = '48.9%';
         blockElement.style.backgroundColor = 'yellow';
         blockElement.style.width = '20px';
         blockElement.style.height = '20px';
+
+        blockPrjElement.style.left = '49.1%';
+        blockPrjElement.style.backgroundColor = 'yellow';
 
         rendered = setInterval(() => {}, 100000);
     }
@@ -124,6 +129,8 @@ function BlockInMotion(id) {
         movingBoxXText.value = floatToPx(x);
         blockElement.style.top = floatToPx(y);
         movingBoxYText.value = floatToPx(y);
+
+        blockPrjElement.style.left = floatToPx(x);
         // move these somewhere else
         //setPeriodText.value = block1.period(realTimer);
         //setRadiusText.value = block1.radius(realTimer);
@@ -155,6 +162,8 @@ function BlockInMotion(id) {
             blockElement.style.backgroundColor = setColorText.value;
             blockElement.style.width = floatToPx(setSizeTextVal);
             blockElement.style.height = floatToPx(setSizeTextVal);
+
+            blockPrjElement.style.backgroundColor = setColorText.value;
         } else {
             wrongInput(setSizeText);
             return;
@@ -198,7 +207,30 @@ function BlockInMotion(id) {
     });
 }
 
+
 var circular1 = new BlockInMotion('1');
 
+// change fps button
+
+const setFpsText = document.querySelector('.shared-info-container-bo > span:nth-child(2)');
+
+document.querySelector('.shared-info-container-bo .fps-decrease').addEventListener('click', (e) => {
+    let fps = parseInt(setFpsText.innerText);
+    if (fps <= 5) {
+        setFpsText.innerText = 5;
+        return;
+    }
+    intervals = parseInt(1000 / fps);
+    setFpsText.innerText = fps - ((fps >= 40) ? 10 : 5);
+})
+document.querySelector('.shared-info-container-bo .fps-increase').addEventListener('click', (e) => {
+    let fps = parseInt(setFpsText.innerText);
+    if (fps >= 150) {
+        setFpsText.innerText = 150;
+        return;
+    }
+    intervals = parseInt(1000 / fps);
+    setFpsText.innerText = fps + ((fps >= 40) ? 10 : 5);
+})
 
 
