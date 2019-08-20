@@ -44,6 +44,10 @@ p input[type="button"] {
     height: 2em;
 }
 
+p input.set-attr-reset {
+    background-color: #b3ad9d;
+}
+
 p input[type="button"]:hover {
     background-color: #aba555;
     transition: background-color .1s ease;
@@ -90,7 +94,5 @@ div.moving-obj {
     border-radius: 50%;
     width: 20px;
     height: 20px;
-    margin-top: -15px;
-    margin-left: -5.4px;
     padding: 0;
 }

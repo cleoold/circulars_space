@@ -65,47 +65,54 @@ function Block(initOffset = 0, initPeriod = 0, initRadius = 0) {
 // moving block area
 
 function BlockInMotion(id) {
-    const block1 = new Block();
+    var block1 = new Block();
     const intervals = 40;
     const blockElement = document.querySelector(`div#moving-obj-${id}`);
     const movingBoxXText = document.querySelector(`#info-container-${id} .box-x`);
     const movingBoxYText = document.querySelector(`#info-container-${id} .box-y`);
+    const setColorText = document.querySelector(`#info-container-${id} .set-color`);
+    const setSizeText = document.querySelector(`#info-container-${id} .set-size`);
     const setPeriodText = document.querySelector(`#info-container-${id} .set-period`);
     const setRadiusText = document.querySelector(`#info-container-${id} .set-radius`);
     const setPeriodLDeltaText = document.querySelector(`#info-container-${id} .set-period-change`);
     const setRadiusLDeltaText = document.querySelector(`#info-container-${id} .set-radius-change`);
     const enterBtn = document.querySelector(`#info-container-${id} .set-attr-go`);
+    const resetBtn = document.querySelector(`#info-container-${id} .set-attr-reset`);
     var maxRadiusInContainer = 0;
     var timer = 0;
+    var rendered = null;
     // set default values of the circle
     function setDefaultValsForCircle(e) {
+        timer = 0;
         maxRadiusInContainer = containerLength / 2;
+        setColorText.value = 'yellow';
+        setSizeText.value = 20;
         setPeriodText.value = 5;
-        setRadiusText.value = containerLength / 4;
+        setRadiusText.value = maxRadiusInContainer / 2;
         setPeriodLDeltaText.value = 0;
         setRadiusLDeltaText.value = 0;
-        blockElement.style.left = '50%';
-        blockElement.style.top = '50%';
+
+        // this value should be 'corrected' like below in rendering, but since this is default case
+        // where the moving obj is always 20px, just set the percentage. users will not notice
+        blockElement.style.left = '49.3%';
+        blockElement.style.top = '47.8%';
+        blockElement.style.backgroundColor = 'yellow';
+        blockElement.style.width = '20px';
+        blockElement.style.height = '20px';
+
+        rendered = setInterval(() => {}, 100000);
     }
-    window.addEventListener('load', setDefaultValsForCircle);
-    // ON RESIZE, if object exceeds the container, keep it at the boundary
-    window.addEventListener('resize', (e) => {
-        maxRadiusInContainer = containerLength / 2;
-        if (block1.initRadius > maxRadiusInContainer) {
-            block1.initRadius = maxRadiusInContainer;
-            block1.initRadius = maxRadiusInContainer;
-        }
-        setRadiusText.value = block1.initRadius;
-    })
 
     // renders the moving object every frame, also updates the X, Y- axis text box
     function rendersBlock() {
         timer += intervals;
-        var realTimer = timer / 1000;
-        var x = block1.yieldX(realTimer) + maxRadiusInContainer;
-        var y = block1.yieldY(realTimer) + maxRadiusInContainer;
+        var realTimer = timer / 1000; // intriguing geometry. i do not like
+        let o = parseFloat(blockElement.style.width);
+        let correction = maxRadiusInContainer - o / 2;
+        var x = block1.yieldX(realTimer) + correction;
+        var y = block1.yieldY(realTimer) + correction;
         // ON ACCELERATION, if object exceeds the container, halt it at the boundary
-        if (x < 0 || x > containerLength || y < 0 || y > containerLength) {
+        if (x < 0 || x > containerLength-o || y < 0 || y > containerLength - 1.5*o) {
             block1.initRadius = maxRadiusInContainer;
             block1.radius = (t) => block1.initRadius;
             block1.initPeriod = 0;
@@ -121,8 +128,19 @@ function BlockInMotion(id) {
         //setPeriodText.value = block1.period(realTimer);
         //setRadiusText.value = block1.radius(realTimer);
     }
-    var rendered = setInterval(() => {}, 100000);
 
+    window.addEventListener('load', setDefaultValsForCircle);
+    // ON RESIZE, if object exceeds the container, keep it at the boundary
+    window.addEventListener('resize', (e) => {
+        maxRadiusInContainer = containerLength / 2;
+        if (block1.initRadius > maxRadiusInContainer) {
+            block1.initRadius = maxRadiusInContainer;
+            block1.initRadius = maxRadiusInContainer;
+        }
+        setRadiusText.value = block1.initRadius;
+    });
+
+    // period and radius text box will change on click based on the block1's status
     setPeriodText.addEventListener('click', (e) => {
         setPeriodText.value = block1.period(timer / 1000);
     });
@@ -130,7 +148,18 @@ function BlockInMotion(id) {
         setRadiusText.value = block1.radius(timer / 1000);
     });
 
-    enterBtn.addEventListener('click', (e) => {
+    enterBtn.addEventListener('click', function triggerCircleMotion(e) {
+        // check color and size boxes
+        const setSizeTextVal = parseFloat(setSizeText.value)
+        if (setSizeTextVal <= 30 && setSizeTextVal >= 5) {
+            blockElement.style.backgroundColor = setColorText.value;
+            blockElement.style.width = floatToPx(setSizeTextVal);
+            blockElement.style.height = floatToPx(setSizeTextVal);
+        } else {
+            wrongInput(setSizeText);
+            return;
+        }
+        // check period and radius boxes
         if (Math.abs(parseFloat(setRadiusText.value)) <= maxRadiusInContainer) {
             block1.initPeriod = parseFloat(setPeriodText.value);
             block1.initRadius = parseFloat(setRadiusText.value);
@@ -138,6 +167,7 @@ function BlockInMotion(id) {
             wrongInput(setRadiusText);
             return;
         }
+        // check period delta and radius delta boxes
         if (!setPeriodLDeltaText.value) setPeriodLDeltaText.value = 0;
         if (!setRadiusLDeltaText.value) setRadiusLDeltaText.value = 0;
         if (Math.abs(parseFloat(setRadiusLDeltaText.value)) <= maxRadiusInContainer) {
@@ -152,11 +182,18 @@ function BlockInMotion(id) {
         const realTimer = timer / 1000;
         clearInterval(rendered);
         // to fix
-        block1.offset = -block1.omega(realTimer) * realTimer;
+        block1.offset -= block1.omega(realTimer) * realTimer;
         timer = 0;
         rendered = setInterval(rendersBlock, intervals);
         enterBtn.value = 'Change!';
-    })
+    });
+    resetBtn.addEventListener('click', (e) => {
+        clearInterval(rendered);
+        block1 = null;
+        setDefaultValsForCircle();
+        block1 = new Block();
+        enterBtn.value = 'Go!';
+    });
 }
 
 var circular1 = new BlockInMotion('1');
