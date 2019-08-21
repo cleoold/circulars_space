@@ -45,12 +45,43 @@
             </div>
         </div>
         <div id="container">
+            <div id="moving-obj-trajectory-1" class="moving-obj-trajectory"></div>
             <div id="origin"></div>
             <div id="moving-obj-1" class="moving-obj"></div>
         </div>
         <div class="projections">
             <div id="moving-obj-prj-1" class="moving-obj-prj"></div>
         </div>
+        <div class="description">
+            <p>
+                <span class="bold">Tips: </span>In this demonstration, you see a ball rotating around the origin
+                (center) of the box. First set the color of the ball: it can be yellow,
+                blue, violet or rgba(255,255,255,0.5). Then, set its diameter, which ranges from 5 to 30, inside the
+                'size' box. The period is the time taken for the ball
+                to complete one complete circle and it should be in seconds. The radius is up to the size of your
+                window. <span class="bold">However, </span>don't worry yet, these values are
+                automatically filled with default ones so you can just press the 'Go' button to see its motion! This is
+                a uniform circular motion.
+                <br /><span class="bold">Hint: </span>A negative period gives a counterclockwise motion, try it out!
+                <br /><span class="bold">Hint2: </span>you can actually drag the ball to set its initial position!
+            </p>
+            <p>
+                You can vary the period or radius linearly by setting the delta value. For example, by setting R delta
+                with 10, the ball's rotating radius will increase
+                every second with an amount of 10px, until it hits the boundary. You can try out other fields to see
+                what would happen. Of course, in this case the motion
+                is not longer a uniform motion.
+            </p>
+            <p>
+                <span class="bold">The principle of this </span> is depicted by a parametric equation with t (time) as
+                variable:
+                <span class="equation">x(t) = R(t)⋅cos(𝜔(t)-𝜑) = R(t)⋅cos(2π/T(t)-𝜑)</span>
+                <span class="equation">y(t) = R(t)⋅sin(𝜔(t)-𝜑) = R(t)⋅sin(2π/T(t)-𝜑)</span>
+                plus the offset correction of the box that contains the ball. Where R is radius and R(t) = R₀+ΔR, T is
+                the period with T(t) = T₀+ΔT, and 𝜑 is the offset.
+            </p>
+        </div>
+        <hr />
         <div class="shared-info-container-bo">
             <span>frames per second: </span><span>25</span>
             <input type="button" class="fps-decrease" value="decrease" />
@@ -60,7 +91,7 @@
     </article>
     <footer>
         <br />
-        Still working in progress! (c) 2019 cleooldsaty. Report bug: <a
+        Still working in progress!? (c) 2019 cleooldsaty. Report bug: <a
             href="https://github.com/cleoold/uniform_circular_motion" target="_blank">Github</a>
     </footer>
 </body>

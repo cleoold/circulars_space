@@ -3,7 +3,7 @@
 */
 
 // background change
-window.addEventListener('load', () => {
+(() => {
     const pBody = document.querySelector('body');
     const pHtml = document.querySelector('html');
     const colors = ['#30542c', '#232170', '#530a80', '#870c6d', '#873a0b'];
@@ -14,4 +14,4 @@ window.addEventListener('load', () => {
         pBody.style.backgroundColor = colors[i];
         pHtml.style.backgroundColor = colors[i];
     }, 5000);
-});
+})();

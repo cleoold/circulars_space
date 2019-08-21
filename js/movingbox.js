@@ -30,10 +30,10 @@ function onChangeContainerSize(e) {
     container.style.height = containerLengthPx;
     containerWidthText.value = containerLengthPx;
 
-    origin.style.left = floatToPx(parseFloat(window.getComputedStyle(container).width) / 2);
-    origin.style.top = floatToPx(parseFloat(window.getComputedStyle(container).height) / 2);
+    origin.style.left = floatToPx(parseFloat(window.getComputedStyle(container).width) / 2 - 3.6);
+    origin.style.top = floatToPx(parseFloat(window.getComputedStyle(container).height) / 2 - 3.5);
 }
-window.addEventListener('load', onChangeContainerSize);
+onChangeContainerSize();
 window.addEventListener('resize', onChangeContainerSize);
 
 function Block(initOffset = 0, initPeriod = 0, initRadius = 0) {
@@ -54,6 +54,7 @@ var intervals = 40;
 function BlockInMotion(id) {
     var block1 = new Block();
     const blockElement = document.querySelector(`div#moving-obj-${id}`);
+    const blockTrajectoryElement = document.querySelector(`div#moving-obj-trajectory-${id}`);
     const blockPrjElement = document.querySelector(`div#moving-obj-prj-${id}`);
     const movingBoxXText = document.querySelector(`#info-container-${id} .box-x`);
     const movingBoxYText = document.querySelector(`#info-container-${id} .box-y`);
@@ -84,6 +85,8 @@ function BlockInMotion(id) {
         setPeriodLDeltaText.value = 0;
         setRadiusLDeltaText.value = 0;
 
+        enterBtn.style.backgroundColor = 'yellow';
+
         // this value should be 'corrected' like below in rendering, but since this is default case
         // where the moving obj is always 20px, just set the percentage. users will not notice
         blockElement.style.left = '49.1%';
@@ -95,6 +98,9 @@ function BlockInMotion(id) {
         blockPrjElement.style.left = '49.1%';
         blockPrjElement.style.backgroundColor = 'yellow';
 
+        blockTrajectoryElement.style.width = '0px';
+        blockTrajectoryElement.style.height = '0px';
+
         rendered = setInterval(() => { }, 100000);
     }
 
@@ -103,6 +109,8 @@ function BlockInMotion(id) {
     }                                                                                           // |
                                                                                                 // |
     // renders the moving object every frame, also updates the X, Y- axis text box              // |
+    // also renders x-projection                                                                // |
+    // also renders radius trajectory                                                           // |
     function rendersBlock() {                                                                   // |
         timer += intervals;                                                                     // |
         var realTimer = timer / 1000; // intriguing geometry. i do not like                     // |
@@ -125,12 +133,24 @@ function BlockInMotion(id) {
         movingBoxYText.value = floatToPx(y);
 
         blockPrjElement.style.left = floatToPx(x);
+
+        redrawsTrajectory(block1.radius(realTimer));
         // move these somewhere else
         //setPeriodText.value = block1.period(realTimer);
         //setRadiusText.value = block1.radius(realTimer);
     }
 
-    window.addEventListener('load', setDefaultValsForCircle);
+    function redrawsTrajectory(radius) {
+        radius = Math.abs(radius);
+        blockTrajectoryElement.style.width = floatToPx(radius * 2);
+        blockTrajectoryElement.style.height = floatToPx(radius * 2);
+        let leftTopPos = parseFloat(window.getComputedStyle(container).width) / 2;
+        blockTrajectoryElement.style.left = floatToPx(leftTopPos - radius);
+        blockTrajectoryElement.style.top = floatToPx(leftTopPos - radius);
+    }
+
+
+    setDefaultValsForCircle();
     // ON RESIZE, if object exceeds the container, keep it at the boundary
     window.addEventListener('resize', (e) => {
         maxRadiusInContainer = containerLength / 2;
@@ -153,6 +173,8 @@ function BlockInMotion(id) {
         // check color and size boxes
         const setSizeTextVal = parseFloat(setSizeText.value)
         if (setSizeTextVal <= 30 && setSizeTextVal >= 5) {
+            enterBtn.style.backgroundColor = setColorText.value;
+
             blockElement.style.backgroundColor = setColorText.value;
             blockElement.style.width = floatToPx(setSizeTextVal);
             blockElement.style.height = floatToPx(setSizeTextVal);
@@ -227,8 +249,11 @@ function BlockInMotion(id) {
 
             let dX = newX - parseFloat(origin.style.left);
             let dY = newY - parseFloat(origin.style.top);
-            setRadiusText.value = Math.sqrt((dX ** 2 + dY ** 2));
+            let newRadius = Math.sqrt((dX ** 2 + dY ** 2));
+            setRadiusText.value = newRadius;
             block1.offset = -Math.atan2(dY, dX);
+
+            redrawsTrajectory(newRadius);
         }
     };
     var blockElementDrag3 = (e) => {
@@ -248,8 +273,6 @@ function BlockInMotion(id) {
         container.addEventListener('touchend', blockElementDrag3);
     }
 }
-
-
 
 
 // change fps button
