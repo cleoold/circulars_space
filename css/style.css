@@ -156,7 +156,7 @@ div.moving-obj {
     padding: 0;
 }
 
-div#projections {
+div.projections {
     position: relative;
     width: 40%;
     height: 10px;
@@ -172,13 +172,13 @@ div.moving-obj-prj {
 }
 
 @media only screen and (max-width:850px) {
-    div#container, div#projections {
+    div#container, div.projections {
         width: 70%;
     }
 }
 
 @media only screen and (max-width:600px) {
-    div#container, div#projections {
+    div#container, div.projections {
         width: 90%;
     }
 }

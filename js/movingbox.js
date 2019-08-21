@@ -2,27 +2,13 @@
     uniform circular motion demo! ()cleoold
 */
 
-// page layout
 
-const pBody = document.querySelector('body');
-const pHtml = document.querySelector('html');
-
-// background change
-window.addEventListener('load', () => {
-        const colors = ['#30542c', '#232170', '#530a80', '#870c6d', '#873a0b'];
-        //var colorsLight = ['#4c9144', '#514db0', '#a06bc2', '#ab609b'];
-        let i = 0;
-        setInterval(() => {
-            if (++i == 5) i = 0;
-            pBody.style.backgroundColor = colors[i];
-            pHtml.style.backgroundColor = colors[i];
-        }, 5000);
-    });
 
 // container of moving block
 
 const container = document.querySelector('div#container');
 const containerWidthText = document.querySelector('.container-width');
+const origin = document.querySelector('div#origin');
 
 var containerLength = 0;
 
@@ -44,7 +30,6 @@ function onChangeContainerSize(e) {
     container.style.height = containerLengthPx;
     containerWidthText.value = containerLengthPx;
 
-    var origin = document.querySelector('div#origin');
     origin.style.left = floatToPx(parseFloat(window.getComputedStyle(container).width) / 2);
     origin.style.top = floatToPx(parseFloat(window.getComputedStyle(container).height) / 2);
 }
@@ -83,6 +68,11 @@ function BlockInMotion(id) {
     var maxRadiusInContainer = 0;
     var timer = 0;
     var rendered = null;
+
+    var dragFlag = false;
+    var blockElementIniX = 0;
+    var blockElementIniY = 0;
+
     // set default values of the circle
     function setDefaultValsForCircle(e) {
         timer = 0;
@@ -105,19 +95,23 @@ function BlockInMotion(id) {
         blockPrjElement.style.left = '49.1%';
         blockPrjElement.style.backgroundColor = 'yellow';
 
-        rendered = setInterval(() => {}, 100000);
+        rendered = setInterval(() => { }, 100000);
     }
 
-    // renders the moving object every frame, also updates the X, Y- axis text box
-    function rendersBlock() {
-        timer += intervals;
-        var realTimer = timer / 1000; // intriguing geometry. i do not like
+    function blockOffBoundary(x, y, o) {                                                        // |
+        return x < 0 || x > containerLength - o || y < 0 || y > containerLength - 1.1 * o;      // |
+    }                                                                                           // |
+                                                                                                // |
+    // renders the moving object every frame, also updates the X, Y- axis text box              // |
+    function rendersBlock() {                                                                   // |
+        timer += intervals;                                                                     // |
+        var realTimer = timer / 1000; // intriguing geometry. i do not like                     // |
         let o = parseFloat(blockElement.style.width);
         let correction = maxRadiusInContainer - o / 2;
         var x = block1.yieldX(realTimer) + correction;
         var y = block1.yieldY(realTimer) + correction;
         // ON ACCELERATION, if object exceeds the container, halt it at the boundary
-        if (x < 0 || x > containerLength-o || y < 0 || y > containerLength - 1.5*o) {
+        if (blockOffBoundary(x, y, o)) {
             block1.initRadius = maxRadiusInContainer;
             block1.radius = (t) => block1.initRadius;
             block1.initPeriod = 0;
@@ -205,10 +199,58 @@ function BlockInMotion(id) {
         movingBoxXText.value = null;
         movingBoxYText.value = null;
     });
+
+    // box draggable at beginning
+    // can set radius and offset (offset is implicit)
+
+    var blockElementDrag1 = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        blockElementIniX = (e.clientX || e.touches[0].clientX) - blockElement.offsetLeft;
+        blockElementIniY = (e.clientY || e.touches[0].clientY) - blockElement.offsetTop;
+        dragFlag = true;
+    };
+    var blockElementDrag2 = (e) => {
+        if (dragFlag) {
+            e = e || window.event;
+            e.preventDefault();
+            let o = parseFloat(blockElement.style.width);
+            let newX = (e.clientX || e.touches[0].clientX) - blockElementIniX;
+            let newY = (e.clientY || e.touches[0].clientY) - blockElementIniY;
+            if (blockOffBoundary(newX, newY, o)) return;
+            blockElement.style.left = floatToPx(newX);
+            blockElement.style.top = floatToPx(newY);
+            movingBoxXText.value = newX;
+            movingBoxYText.value = newY;
+
+            blockPrjElement.style.left = floatToPx(newX);
+
+            let dX = newX - parseFloat(origin.style.left);
+            let dY = newY - parseFloat(origin.style.top);
+            setRadiusText.value = Math.sqrt((dX ** 2 + dY ** 2));
+            block1.offset = -Math.atan2(dY, dX);
+        }
+    };
+    var blockElementDrag3 = (e) => {
+        dragFlag = false;
+        blockElementIniX = 0;
+        blockElementIniY = 0;
+    };
+
+    if ('onmousedown' in document.documentElement) {
+        blockElement.addEventListener('mousedown', blockElementDrag1);
+        container.addEventListener('mousemove', blockElementDrag2);
+        container.addEventListener('mouseup', blockElementDrag3);
+    }
+    if ('ontouchstart' in document.documentElement) {
+        blockElement.addEventListener('touchstart', blockElementDrag1);
+        container.addEventListener('touchmove', blockElementDrag2);
+        container.addEventListener('touchend', blockElementDrag3);
+    }
 }
 
 
-var circular1 = new BlockInMotion('1');
+
 
 // change fps button
 
