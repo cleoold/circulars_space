@@ -30,14 +30,18 @@
             <input type="text" class="set-color" autocomplete="off" />
             <div class="box-label"><span>size(px)</span></div>
             <input type="text" class="set-size" autocomplete="off" />
+            <div class="box-label"><span>semi X axis(px)</span></div>
+            <input type="text" class="set-semi-X-axis" autocomplete="off" />
+            <div class="box-label"><span>Rx Δ(px/sec)</span></div>
+            <input type="text" class="set-semi-X-axis-change" autocomplete="off" />
+            <div class="box-label"><span>semi Y axis(px)</span></div>
+            <input type="text" class="set-semi-Y-axis" autocomplete="off" />
+            <div class="box-label"><span>Ry Δ(px/sec)</span></div>
+            <input type="text" class="set-semi-Y-axis-change" autocomplete="off" />
             <div class="box-label"><span>period(sec)</span></div>
             <input type="text" class="set-period" autocomplete="off" />
-            <div class="box-label"><span>radius(px)</span></div>
-            <input type="text" class="set-radius" autocomplete="off" />
             <div class="box-label"><span>T Δ(sec/sec)</span></div>
             <input type="text" class="set-period-change" autocomplete="off" />
-            <div class="box-label"><span>R Δ(px/sec)</span></div>
-            <input type="text" class="set-radius-change" autocomplete="off" />
 
             <div class="buttons">
                 <input type="button" class="set-attr-go" value="Go!" />
@@ -65,26 +69,32 @@
                 (center) of the box. First set the color of the ball: it can be yellow,
                 blue, violet or rgba(255,255,255,0.5). Then, set its diameter, which ranges from 5 to 30, inside the
                 'size' box. The period is the time taken for the ball
-                to complete one complete circle and it should be in seconds. The radius is up to the size of your
-                window. <span class="bold">However, </span>don't worry yet, these values are
-                automatically filled with default ones so you can just press the 'Go' button to see its motion! This is
+                to complete one complete circle and it should be in seconds. The semi-X-axis and semi-Y-axis is up to
+                the size of your
+                window. Note when semi-X equals to semi-Y, it will do a circular motion.<span class="bold">However,
+                </span>don't worry yet, these values are
+                automatically filled with default ones so you can just press the 'Go' button to see its motion! It will
+                be
                 a uniform circular motion.
                 <br /><span class="bold">Hint: </span>A negative period gives a counterclockwise motion, try it out!
                 <br /><span class="bold">Hint2: </span>you can actually drag the ball to set its initial position!
             </p>
             <p>
-                You can vary the period or radius linearly by setting the delta value. For example, by setting R delta
-                with 10, the ball's rotating radius will increase
-                every second with an amount of 10px, until it hits the boundary. You can try out other fields to see
+                You can vary the period or semi-X/Y linearly by setting the delta value. For example, by setting Rx
+                delta
+                with 10, the ball's rotating semi-X-axis will increase
+                every second with an amount of 10px, until it hits the boundary. Visually it will be more and more flat.
+                You can try out other fields to see
                 what would happen. Of course, in this case the motion
                 is not longer a uniform motion.
             </p>
             <p>
                 <span class="bold">The principle of this </span> is depicted by a parametric equation with t (time) as
                 variable:
-                <span class="equation">x(t) = R(t)⋅cos(𝜔(t)⋅t-𝜑) = R(t)⋅cos(2π/T(t)⋅t-𝜑)</span>
-                <span class="equation">y(t) = R(t)⋅sin(𝜔(t)⋅t-𝜑) = R(t)⋅sin(2π/T(t)⋅t-𝜑)</span>
-                plus the offset correction of the box that contains the ball. Where R is radius and R(t) = R₀+t⋅ΔR, T is
+                <span class="equation">x(t) = Rx(t)⋅cos(𝜔(t)⋅t-𝜑) = Rx(t)⋅cos(2π/T(t)⋅t-𝜑)</span>
+                <span class="equation">y(t) = Ry(t)⋅sin(𝜔(t)⋅t-𝜑) = Ry(t)⋅sin(2π/T(t)⋅t-𝜑)</span>
+                plus the offset correction of the box that contains the ball. Where Rx or Ry is semi-X-axis or
+                semi-Y-axis and Rx(t) = Rx₀+t⋅ΔRx, Ry(t) = Ry₀+t⋅ΔRy, T is
                 the period with T(t) = T₀+t⋅ΔT, and 𝜑 is the offset.
             </p>
         </div>
@@ -99,8 +109,8 @@
     </article>
     <footer>
         <br />
-        Have fun. (c) 2019 cleooldsaty. Report bug: <a
-            href="https://github.com/cleoold/uniform_circular_motion" target="_blank">Github</a>
+        Have fun. (c) 2019 cleooldsaty. Report bug: <a href="https://github.com/cleoold/uniform_circular_motion"
+            target="_blank">Github</a>
     </footer>
 </body>
 

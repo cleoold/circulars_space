@@ -16,6 +16,11 @@ function floatToPx(num) {
     return String(num) + 'px';
 }
 
+function parseFloat200(s) {
+    let res = parseFloat(s);
+    return (isNaN(res))? Infinity : res;
+}
+
 function wrongInput(elem) {
     let o = elem.style.backgroundColor;
     elem.style.backgroundColor = '#c98d8d';
@@ -36,15 +41,17 @@ function onChangeContainerSize(e) {
 onChangeContainerSize();
 window.addEventListener('resize', onChangeContainerSize);
 
-function Block(initOffset = 0, initPeriod = 0, initRadius = 0) {
+function Block(initOffset = 0, initPeriod = 0, initSemiX = 0, initSemiY = 0) {
     this.offset = initOffset;
     this.initPeriod = initPeriod;
-    this.initRadius = initRadius;
+    this.initSemiX = initSemiX;
+    this.initSemiY = initSemiY;
     this.period = (t) => this.initPeriod;
     this.omega = (t) => 2 * Math.PI / this.period(t);
-    this.radius = (t) => this.initRadius;
-    this.yieldX = (t) => this.radius(t) * Math.cos(this.omega(t) * t - this.offset);
-    this.yieldY = (t) => this.radius(t) * Math.sin(this.omega(t) * t - this.offset);
+    this.semiX = (t) => this.initSemiX;
+    this.semiY = (t) => this.initSemiY;
+    this.yieldX = (t) => this.semiX(t) * Math.cos(this.omega(t) * t - this.offset);
+    this.yieldY = (t) => this.semiY(t) * Math.sin(this.omega(t) * t - this.offset);
 }
 
 // moving block area
@@ -61,9 +68,11 @@ function BlockInMotion(id) {
     const setColorText = document.querySelector(`#info-container-${id} .set-color`);
     const setSizeText = document.querySelector(`#info-container-${id} .set-size`);
     const setPeriodText = document.querySelector(`#info-container-${id} .set-period`);
-    const setRadiusText = document.querySelector(`#info-container-${id} .set-radius`);
+    const setSemiXText = document.querySelector(`#info-container-${id} .set-semi-X-axis`);
+    const setSemiYText = document.querySelector(`#info-container-${id} .set-semi-Y-axis`);
     const setPeriodLDeltaText = document.querySelector(`#info-container-${id} .set-period-change`);
-    const setRadiusLDeltaText = document.querySelector(`#info-container-${id} .set-radius-change`);
+    const setSemiXLDeltaText = document.querySelector(`#info-container-${id} .set-semi-X-axis-change`);
+    const setSemiYLDeltaText = document.querySelector(`#info-container-${id} .set-semi-Y-axis-change`);
     const enterBtn = document.querySelector(`#info-container-${id} .set-attr-go`);
     const resetBtn = document.querySelector(`#info-container-${id} .set-attr-reset`);
     var maxRadiusInContainer = 0;
@@ -80,9 +89,11 @@ function BlockInMotion(id) {
         maxRadiusInContainer = containerLength / 2;
         setSizeText.value = 20;
         setPeriodText.value = 5;
-        setRadiusText.value = maxRadiusInContainer / 2;
+        setSemiXText.value = maxRadiusInContainer / 2;
+        setSemiYText.value = maxRadiusInContainer / 2;
         setPeriodLDeltaText.value = 0;
-        setRadiusLDeltaText.value = 0;
+        setSemiXLDeltaText.value = 0;
+        setSemiYLDeltaText.value = 0;
 
         // this value should be 'corrected' like below in rendering, but since this is default case
         // where the moving obj is always 20px, just set the percentage. users will not notice
@@ -112,7 +123,7 @@ function BlockInMotion(id) {
                                                                                                 // |
     // renders the moving object every frame, also updates the X, Y- axis text box              // |
     // also renders x-projection                                                                // |
-    // also renders radius trajectory                                                           // |
+    // also renders semiX/semiY trajectory                                                           // |
     function rendersBlock() {                                                                   // |
         timer += intervals;                                                                     // |
         var realTimer = timer / 1000; // intriguing geometry. i do not like                     // |
@@ -122,11 +133,14 @@ function BlockInMotion(id) {
         var y = block1.yieldY(realTimer) + correction;
         // ON ACCELERATION, if object exceeds the container, halt it at the boundary
         if (blockOffBoundary(x, y, o)) {
-            block1.initRadius = maxRadiusInContainer;
-            block1.radius = (t) => block1.initRadius;
+            block1.initSemiX = maxRadiusInContainer;
+            block1.SemiX = (t) => block1.initSemiX;
+            block1.initSemiY = maxRadiusInContainer;
+            block1.SemiY = (t) => block1.initSemiY;
             block1.initPeriod = 0;
             block1.period = (t) => block1.initPeriod;
-            setRadiusLDeltaText.value = 0;
+            setSemiXLDeltaText.value = 0;
+            setSemiYLDeltaText.value = 0;
             setPeriodText.value = 0;
         }
         blockElement.style.left = floatToPx(x);
@@ -136,21 +150,19 @@ function BlockInMotion(id) {
 
         blockPrjElement.style.left = floatToPx(x);
 
-        redrawsTrajectory(block1.radius(realTimer));
-        // move these somewhere else
-        //setPeriodText.value = block1.period(realTimer);
-        //setRadiusText.value = block1.radius(realTimer);
+        redrawsTrajectory(block1.semiX(realTimer), block1.semiY(realTimer));
 
         rendered = setTimeout(rendersBlock, intervals);
     }
 
-    function redrawsTrajectory(radius) {
-        radius = Math.abs(radius);
-        blockTrajectoryElement.style.width = floatToPx(radius * 2);
-        blockTrajectoryElement.style.height = floatToPx(radius * 2);
+    function redrawsTrajectory(semiX, semiY) {
+        semiX = Math.abs(semiX);
+        semiY = Math.abs(semiY);
+        blockTrajectoryElement.style.width = floatToPx(semiX * 2);
+        blockTrajectoryElement.style.height = floatToPx(semiY * 2);
         let leftTopPos = parseFloat(window.getComputedStyle(container).width) / 2;
-        blockTrajectoryElement.style.left = floatToPx(leftTopPos - radius);
-        blockTrajectoryElement.style.top = floatToPx(leftTopPos - radius);
+        blockTrajectoryElement.style.left = floatToPx(leftTopPos - semiX);
+        blockTrajectoryElement.style.top = floatToPx(leftTopPos - semiY);
     }
 
 
@@ -158,21 +170,25 @@ function BlockInMotion(id) {
     // ON RESIZE, if object exceeds the container, keep it at the boundary
     window.addEventListener('resize', (e) => {
         maxRadiusInContainer = containerLength / 2;
-        if (block1.initRadius > maxRadiusInContainer) {
-            block1.initRadius = maxRadiusInContainer;
-            block1.initRadius = maxRadiusInContainer;
-        }
+        if (block1.initSemiX > maxRadiusInContainer)
+            block1.initSemiX = maxRadiusInContainer;
+        if (block1.initSemiY > maxRadiusInContainer)
+            block1.initSemiY = maxRadiusInContainer;
         if ('ontouchstart' in document.documentElement) return;
-        // irrelevant. on mobile, when scrolling the page the radius is set to 0 which is wired. fix it here in this if.
-        setRadiusText.value = block1.initRadius;
+        // irrelevant. on mobile, when scrolling the page the semiX/semiY is set to 0 which is wired. fix it here in this if.
+        setSemiXText.value = block1.initSemiX;
+        setSemiYText.value = block1.initSemiY;
     });
 
-    // period and radius text box will change on click based on the block1's status
+    // period and semiX/semiY text box will change on click based on the block1's status
     setPeriodText.addEventListener('click', (e) => {
         setPeriodText.value = block1.period(timer / 1000);
     });
-    setRadiusText.addEventListener('click', (e) => {
-        setRadiusText.value = block1.radius(timer / 1000);
+    setSemiXText.addEventListener('click', (e) => {
+        setSemiXText.value = block1.semiX(timer / 1000);
+    });
+    setSemiYText.addEventListener('click', (e) => {
+        setSemiYText.value = block1.semiY(timer / 1000);
     });
 
     enterBtn.addEventListener('click', function triggerCircleMotion(e) {
@@ -190,24 +206,46 @@ function BlockInMotion(id) {
             wrongInput(setSizeText);
             return;
         }
-        // check period and radius boxes
-        if (Math.abs(parseFloat(setRadiusText.value)) <= maxRadiusInContainer) {
+        // check period and semiX/semiY boxes
+        let TNotValid = isNaN(parseFloat(setPeriodText.value));
+        let XToLarge = Math.abs(parseFloat200(setSemiXText.value)) > maxRadiusInContainer;
+        let YToLarge = Math.abs(parseFloat200(setSemiYText.value)) > maxRadiusInContainer;
+        if (!XToLarge && !YToLarge && !TNotValid) {
             block1.initPeriod = parseFloat(setPeriodText.value);
-            block1.initRadius = parseFloat(setRadiusText.value);
+            block1.initSemiX = parseFloat(setSemiXText.value);
+            block1.initSemiY = parseFloat(setSemiYText.value);
+
+            setPeriodText.value = parseFloat(setPeriodText.value);
+            setSemiXText.value = parseFloat(setSemiXText.value);
+            setSemiYText.value = parseFloat(setSemiYText.value);
         } else {
-            wrongInput(setRadiusText);
+            if (XToLarge) wrongInput(setSemiXText);
+            if (YToLarge) wrongInput(setSemiYText);
+            if (TNotValid) wrongInput(setPeriodText);
             return;
         }
-        // check period delta and radius delta boxes
+        // check period delta and semiX/semiY delta boxes
         if (!setPeriodLDeltaText.value) setPeriodLDeltaText.value = 0;
-        if (!setRadiusLDeltaText.value) setRadiusLDeltaText.value = 0;
-        if (Math.abs(parseFloat(setRadiusLDeltaText.value)) <= maxRadiusInContainer) {
+        if (!setSemiXLDeltaText.value) setSemiXLDeltaText.value = 0;
+        if (!setSemiYLDeltaText.value) setSemiYLDeltaText.value = 0;
+        let TLDNotValid = isNaN(parseFloat(setPeriodLDeltaText.value));
+        let XLDToLarge = Math.abs(parseFloat200(setSemiXLDeltaText.value)) > maxRadiusInContainer;
+        let YLDToLarge = Math.abs(parseFloat200(setSemiYLDeltaText.value)) > maxRadiusInContainer;
+        if (!XLDToLarge && !YLDToLarge && !TLDNotValid) {
             var periodLD = parseFloat(setPeriodLDeltaText.value);
             block1.period = (t) => block1.initPeriod + t * periodLD;
-            var radiusLD = parseFloat(setRadiusLDeltaText.value);
-            block1.radius = (t) => block1.initRadius + t * radiusLD;
+            var semiXLD = parseFloat(setSemiXLDeltaText.value);
+            block1.semiX = (t) => block1.initSemiX + t * semiXLD;
+            var semiYLD = parseFloat(setSemiYLDeltaText.value);
+            block1.semiY = (t) => block1.initSemiY + t * semiYLD;
+
+            setPeriodLDeltaText.value = parseFloat(setPeriodText.value);
+            setSemiXLDeltaText.value = parseFloat(setSemiXLDeltaText.value);
+            setSemiYLDeltaText.value = parseFloat(setSemiYLDeltaText.value);
         } else {
-            wrongInput(setRadiusLDeltaText);
+            if (XLDToLarge) wrongInput(setSemiXLDeltaText);
+            if (YLDToLarge) wrongInput(setSemiYLDeltaText);
+            if (TLDNotValid) wrongInput(setPeriodLDeltaText);
             return;
         }
         const realTimer = timer / 1000;
@@ -256,10 +294,11 @@ function BlockInMotion(id) {
             let dX = newX - parseFloat(origin.style.left);
             let dY = newY - parseFloat(origin.style.top);
             let newRadius = Math.sqrt((dX ** 2 + dY ** 2));
-            setRadiusText.value = newRadius;
+            setSemiXText.value = newRadius;
+            setSemiYText.value = newRadius;
             block1.offset = -Math.atan2(dY, dX);
 
-            redrawsTrajectory(newRadius);
+            redrawsTrajectory(newRadius, newRadius);
         }
     };
     var blockElementDrag3 = (e) => {
