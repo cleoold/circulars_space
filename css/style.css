@@ -198,6 +198,54 @@ div.moving-obj-prj {
     }
 }
 
+/* multi-obj control button */
+
+.obj-manage {
+    margin: 1.7em 0 .5em 0;
+    padding: .8em 0 .8em 0;
+    width: 43%;
+    border: 1px solid rgba(255, 255, 255, .2);
+    border-radius: .3em;
+}
+
+@media only screen and (max-width:850px) {
+    .obj-manage {
+        width: 79%;
+    }
+}
+
+@media only screen and (max-width:600px) {
+    .obj-manage {
+        width: 99%;
+    }
+}
+
+.obj-manage input[type="button"] {
+    background-color: rgba(255, 255, 255, .3);
+    color: white;
+    border: none;
+    padding: .25em;
+    margin: .7em .5em;
+    width: 12em;
+    height: 2.2em;
+}
+
+.obj-manage input[type="button"]:hover {
+    background-color: rgba(255, 255, 255, .7);
+    transition: background-color .2s ease;
+    -webkit-transition: background-color .2s ease;
+}
+
+.obj-manage input[type="button"]:active {
+    background-color: rgba(255, 255, 255, .4);
+}
+
+.obj-manage .objs-oneclick-go,
+.obj-manage .objs-oneclick-reset,
+.obj-manage br {
+    display: none;
+}
+
 /* description */
 
 .description {

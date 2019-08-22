@@ -75,33 +75,35 @@ function BlockInMotion(id) {
     var blockElementIniY = 0;
 
     // set default values of the circle
-    function setDefaultValsForCircle(e) {
+    function setDefaultValsForCircle(e, resetColor=true) {
         timer = 0;
         maxRadiusInContainer = containerLength / 2;
-        setColorText.value = 'yellow';
         setSizeText.value = 20;
         setPeriodText.value = 5;
         setRadiusText.value = maxRadiusInContainer / 2;
         setPeriodLDeltaText.value = 0;
         setRadiusLDeltaText.value = 0;
 
-        enterBtn.style.backgroundColor = 'yellow';
-
         // this value should be 'corrected' like below in rendering, but since this is default case
         // where the moving obj is always 20px, just set the percentage. users will not notice
         blockElement.style.left = '49.1%';
         blockElement.style.top = '48.9%';
-        blockElement.style.backgroundColor = 'yellow';
         blockElement.style.width = '20px';
         blockElement.style.height = '20px';
 
         blockPrjElement.style.left = '49.1%';
-        blockPrjElement.style.backgroundColor = 'yellow';
 
         blockTrajectoryElement.style.width = '0px';
         blockTrajectoryElement.style.height = '0px';
 
-        rendered = setInterval(() => { }, 100000);
+        if (resetColor) {
+            setColorText.value = 'yellow';
+            enterBtn.style.backgroundColor = 'yellow';
+            blockElement.style.backgroundColor = 'yellow';
+            blockPrjElement.style.backgroundColor = 'yellow';
+        }
+
+        rendered = null;
     }
 
     function blockOffBoundary(x, y, o) {                                                        // |
@@ -138,6 +140,8 @@ function BlockInMotion(id) {
         // move these somewhere else
         //setPeriodText.value = block1.period(realTimer);
         //setRadiusText.value = block1.radius(realTimer);
+
+        rendered = setTimeout(rendersBlock, intervals);
     }
 
     function redrawsTrajectory(radius) {
@@ -158,6 +162,8 @@ function BlockInMotion(id) {
             block1.initRadius = maxRadiusInContainer;
             block1.initRadius = maxRadiusInContainer;
         }
+        if ('ontouchstart' in document.documentElement) return;
+        // irrelevant. on mobile, when scrolling the page the radius is set to 0 which is wired. fix it here in this if.
         setRadiusText.value = block1.initRadius;
     });
 
@@ -205,17 +211,17 @@ function BlockInMotion(id) {
             return;
         }
         const realTimer = timer / 1000;
-        clearInterval(rendered);
+        clearTimeout(rendered);
         // to fix
         block1.offset -= block1.omega(realTimer) * realTimer;
         timer = 0;
-        rendered = setInterval(rendersBlock, intervals);
+        rendered = setTimeout(rendersBlock, intervals);
         enterBtn.value = 'Change!';
     });
     resetBtn.addEventListener('click', (e) => {
-        clearInterval(rendered);
+        clearTimeout(rendered);
         block1 = null;
-        setDefaultValsForCircle();
+        setDefaultValsForCircle(null, false);
         block1 = new Block();
         enterBtn.value = 'Go!';
         movingBoxXText.value = null;
@@ -287,7 +293,7 @@ document.querySelector('.shared-info-container-bo .fps-decrease').addEventListen
     }
     intervals = parseInt(1000 / fps);
     setFpsText.innerText = fps - ((fps >= 40) ? 10 : 5);
-})
+});
 document.querySelector('.shared-info-container-bo .fps-increase').addEventListener('click', (e) => {
     let fps = parseInt(setFpsText.innerText);
     if (fps >= 150) {
@@ -296,6 +302,6 @@ document.querySelector('.shared-info-container-bo .fps-increase').addEventListen
     }
     intervals = parseInt(1000 / fps);
     setFpsText.innerText = fps + ((fps >= 40) ? 10 : 5);
-})
+});
 
 
