@@ -4,7 +4,6 @@ This is the circular motion version.
 
 uniform (probably not so uniform because it supports linear acceleration) circular motion demo page with auto div scaling!
 
-see demo at https://cleoold.github.io/uniform_circular_motion/index.html
 
 Some special points to point:
 
