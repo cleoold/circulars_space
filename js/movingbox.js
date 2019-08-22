@@ -239,7 +239,7 @@ function BlockInMotion(id) {
             var semiYLD = parseFloat(setSemiYLDeltaText.value);
             block1.semiY = (t) => block1.initSemiY + t * semiYLD;
 
-            setPeriodLDeltaText.value = parseFloat(setPeriodText.value);
+            setPeriodLDeltaText.value = parseFloat(setPeriodLDeltaText.value);
             setSemiXLDeltaText.value = parseFloat(setSemiXLDeltaText.value);
             setSemiYLDeltaText.value = parseFloat(setSemiYLDeltaText.value);
         } else {
