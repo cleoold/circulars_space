@@ -1,6 +1,20 @@
-# circular/elliptic motion demo
+# interactive circular/elliptic motion demo
+
+* uniform circular motion
+
+![uniform circular motion](https://cleoold.com/wp-content/uploads/2019/08/ffawvv.gif)
+
+* many uniform circular motions
+
+![uniform circular motion](https://cleoold.com/wp-content/uploads/2019/08/gsgeef.gif)
+
+* many circular motions with varying focus length & speed
 
 ![elliptic motion](https://cleoold.com/wp-content/uploads/2019/08/dadasdsa.gif)
+
+* elliptic motion and harmonic motion with rotation
+
+![elliptic motion](https://cleoold.com/wp-content/uploads/2019/08/dawbsd.gif)
 
 This is the elliptic motion version.
 

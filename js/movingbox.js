@@ -41,17 +41,33 @@ function onChangeContainerSize(e) {
 onChangeContainerSize();
 window.addEventListener('resize', onChangeContainerSize);
 
-function Block(initOffset = 0, initPeriod = 0, initSemiX = 0, initSemiY = 0) {
+// block functions
+
+function degToRadian(deg) { return Math.PI * deg / 180;}
+
+function rotateX(x, y, rad) { return Math.cos(rad) * x - Math.sin(rad) * y;}
+
+function rotateY(x, y, rad) { return Math.sin(rad) * x + Math.cos(rad) * y;}
+
+function Block(initOffset = 0, initPeriod = 0, initSemiX = 0, initSemiY = 0, initRotate = 0) {
     this.offset = initOffset;
     this.initPeriod = initPeriod;
     this.initSemiX = initSemiX;
     this.initSemiY = initSemiY;
+    this.initRotate = initRotate; // deg
     this.period = (t) => this.initPeriod;
     this.omega = (t) => 2 * Math.PI / this.period(t);
     this.semiX = (t) => this.initSemiX;
     this.semiY = (t) => this.initSemiY;
+    this.rotate = (t) => this.initRotate; // deg
     this.yieldX = (t) => this.semiX(t) * Math.cos(this.omega(t) * t - this.offset);
     this.yieldY = (t) => this.semiY(t) * Math.sin(this.omega(t) * t - this.offset);
+    this.yieldRotated = (t) => {
+        let x = this.yieldX(t);
+        let y = this.yieldY(t);
+        let rad = degToRadian(this.rotate(t));
+        return [rotateX(x,y,rad), rotateY(x,y,rad)];
+    }
 }
 
 // moving block area
@@ -68,11 +84,13 @@ function BlockInMotion(id) {
     const setColorText = document.querySelector(`#info-container-${id} .set-color`);
     const setSizeText = document.querySelector(`#info-container-${id} .set-size`);
     const setPeriodText = document.querySelector(`#info-container-${id} .set-period`);
+    const setRotateText = document.querySelector(`#info-container-${id} .set-angle`);
     const setSemiXText = document.querySelector(`#info-container-${id} .set-semi-X-axis`);
     const setSemiYText = document.querySelector(`#info-container-${id} .set-semi-Y-axis`);
     const setPeriodLDeltaText = document.querySelector(`#info-container-${id} .set-period-change`);
     const setSemiXLDeltaText = document.querySelector(`#info-container-${id} .set-semi-X-axis-change`);
     const setSemiYLDeltaText = document.querySelector(`#info-container-${id} .set-semi-Y-axis-change`);
+    const setRotateLDeltaText = document.querySelector(`#info-container-${id} .set-angle-change`);
     const enterBtn = document.querySelector(`#info-container-${id} .set-attr-go`);
     const resetBtn = document.querySelector(`#info-container-${id} .set-attr-reset`);
     var maxRadiusInContainer = 0;
@@ -91,9 +109,11 @@ function BlockInMotion(id) {
         setPeriodText.value = 5;
         setSemiXText.value = maxRadiusInContainer / 2;
         setSemiYText.value = maxRadiusInContainer / 2;
+        setRotateText.value = 0;
         setPeriodLDeltaText.value = 0;
         setSemiXLDeltaText.value = 0;
         setSemiYLDeltaText.value = 0;
+        setRotateLDeltaText.value = 0;
 
         // this value should be 'corrected' like below in rendering, but since this is default case
         // where the moving obj is always 20px, just set the percentage. users will not notice
@@ -123,14 +143,15 @@ function BlockInMotion(id) {
                                                                                                 // |
     // renders the moving object every frame, also updates the X, Y- axis text box              // |
     // also renders x-projection                                                                // |
-    // also renders semiX/semiY trajectory                                                           // |
+    // also renders semiX/semiY trajectory                                                      // |
     function rendersBlock() {                                                                   // |
         timer += intervals;                                                                     // |
         var realTimer = timer / 1000; // intriguing geometry. i do not like                     // |
         let o = parseFloat(blockElement.style.width);
         let correction = maxRadiusInContainer - o / 2;
-        var x = block1.yieldX(realTimer) + correction;
-        var y = block1.yieldY(realTimer) + correction;
+        const coordinateSet = block1.yieldRotated(realTimer);
+        var x = coordinateSet[0] + correction;
+        var y = coordinateSet[1] + correction;
         // ON ACCELERATION, if object exceeds the container, halt it at the boundary
         if (blockOffBoundary(x, y, o)) {
             block1.initSemiX = maxRadiusInContainer;
@@ -139,9 +160,12 @@ function BlockInMotion(id) {
             block1.SemiY = (t) => block1.initSemiY;
             block1.initPeriod = 0;
             block1.period = (t) => block1.initPeriod;
+            block1.initRotate = 0;
+            block1.rotate = (t) => block1.initRotate;
             setSemiXLDeltaText.value = 0;
             setSemiYLDeltaText.value = 0;
             setPeriodText.value = 0;
+            return;
         }
         blockElement.style.left = floatToPx(x);
         movingBoxXText.value = floatToPx(x);
@@ -150,12 +174,12 @@ function BlockInMotion(id) {
 
         blockPrjElement.style.left = floatToPx(x);
 
-        redrawsTrajectory(block1.semiX(realTimer), block1.semiY(realTimer));
+        redrawsTrajectory(block1.semiX(realTimer), block1.semiY(realTimer), block1.rotate(realTimer));
 
         rendered = setTimeout(rendersBlock, intervals);
     }
 
-    function redrawsTrajectory(semiX, semiY) {
+    function redrawsTrajectory(semiX, semiY, deg) {
         semiX = Math.abs(semiX);
         semiY = Math.abs(semiY);
         blockTrajectoryElement.style.width = floatToPx(semiX * 2);
@@ -163,6 +187,8 @@ function BlockInMotion(id) {
         let leftTopPos = parseFloat(window.getComputedStyle(container).width) / 2;
         blockTrajectoryElement.style.left = floatToPx(leftTopPos - semiX);
         blockTrajectoryElement.style.top = floatToPx(leftTopPos - semiY);
+        blockTrajectoryElement.style.transform = `rotate(${deg}deg)`;
+        blockTrajectoryElement.style.WebkitTransform = `rotate(${deg}deg)`;
     }
 
 
@@ -180,7 +206,7 @@ function BlockInMotion(id) {
         setSemiYText.value = block1.initSemiY;
     });
 
-    // period and semiX/semiY text box will change on click based on the block1's status
+    // period, semiX/semiY and rotation text box will change on click based on the block1's status
     setPeriodText.addEventListener('click', (e) => {
         setPeriodText.value = block1.period(timer / 1000);
     });
@@ -189,6 +215,9 @@ function BlockInMotion(id) {
     });
     setSemiYText.addEventListener('click', (e) => {
         setSemiYText.value = block1.semiY(timer / 1000);
+    });
+    setRotateText.addEventListener('click', (e) => {
+        setRotateText.value = block1.rotate(timer / 1000);
     });
 
     enterBtn.addEventListener('click', function triggerCircleMotion(e) {
@@ -206,46 +235,56 @@ function BlockInMotion(id) {
             wrongInput(setSizeText);
             return;
         }
-        // check period and semiX/semiY boxes
+        // check period, semiX/semiY, rotation boxes
         let TNotValid = isNaN(parseFloat(setPeriodText.value));
+        let ANotValid = isNaN(parseFloat(setRotateText.value)) || Math.abs(parseFloat(setRotateText.value)) > 360;
         let XToLarge = Math.abs(parseFloat200(setSemiXText.value)) > maxRadiusInContainer;
         let YToLarge = Math.abs(parseFloat200(setSemiYText.value)) > maxRadiusInContainer;
-        if (!XToLarge && !YToLarge && !TNotValid) {
+        if (!XToLarge && !YToLarge && !TNotValid && !ANotValid) {
             block1.initPeriod = parseFloat(setPeriodText.value);
             block1.initSemiX = parseFloat(setSemiXText.value);
             block1.initSemiY = parseFloat(setSemiYText.value);
+            block1.initRotate = parseFloat(setRotateText.value);
 
             setPeriodText.value = parseFloat(setPeriodText.value);
             setSemiXText.value = parseFloat(setSemiXText.value);
             setSemiYText.value = parseFloat(setSemiYText.value);
+            setRotateText.value = parseFloat(setRotateText.value);
         } else {
             if (XToLarge) wrongInput(setSemiXText);
             if (YToLarge) wrongInput(setSemiYText);
             if (TNotValid) wrongInput(setPeriodText);
+            if (ANotValid) wrongInput(setRotateText);
             return;
         }
-        // check period delta and semiX/semiY delta boxes
+        // check period delta, semiX/semiY, rotation boxes delta boxes
         if (!setPeriodLDeltaText.value) setPeriodLDeltaText.value = 0;
         if (!setSemiXLDeltaText.value) setSemiXLDeltaText.value = 0;
         if (!setSemiYLDeltaText.value) setSemiYLDeltaText.value = 0;
+        if (!setRotateLDeltaText.value) setRotateLDeltaText.value = 0;
         let TLDNotValid = isNaN(parseFloat(setPeriodLDeltaText.value));
+        let ALDNotValid = isNaN(parseFloat(setRotateLDeltaText.value)) || Math.abs(parseFloat(setRotateLDeltaText.value)) > 360;
         let XLDToLarge = Math.abs(parseFloat200(setSemiXLDeltaText.value)) > maxRadiusInContainer;
         let YLDToLarge = Math.abs(parseFloat200(setSemiYLDeltaText.value)) > maxRadiusInContainer;
-        if (!XLDToLarge && !YLDToLarge && !TLDNotValid) {
+        if (!XLDToLarge && !YLDToLarge && !TLDNotValid && !ALDNotValid) {
             var periodLD = parseFloat(setPeriodLDeltaText.value);
             block1.period = (t) => block1.initPeriod + t * periodLD;
             var semiXLD = parseFloat(setSemiXLDeltaText.value);
             block1.semiX = (t) => block1.initSemiX + t * semiXLD;
             var semiYLD = parseFloat(setSemiYLDeltaText.value);
             block1.semiY = (t) => block1.initSemiY + t * semiYLD;
+            var rotateLD = parseFloat(setRotateLDeltaText.value);
+            block1.rotate = (t) => block1.initRotate + t * rotateLD;
 
-            setPeriodLDeltaText.value = parseFloat(setPeriodLDeltaText.value);
-            setSemiXLDeltaText.value = parseFloat(setSemiXLDeltaText.value);
-            setSemiYLDeltaText.value = parseFloat(setSemiYLDeltaText.value);
+            setPeriodLDeltaText.value = periodLD;
+            setSemiXLDeltaText.value = semiXLD;
+            setSemiYLDeltaText.value = semiYLD;
+            setRotateLDeltaText.value = rotateLD;
         } else {
             if (XLDToLarge) wrongInput(setSemiXLDeltaText);
             if (YLDToLarge) wrongInput(setSemiYLDeltaText);
             if (TLDNotValid) wrongInput(setPeriodLDeltaText);
+            if (ALDNotValid) wrongInput(setRotateLDeltaText);
             return;
         }
         const realTimer = timer / 1000;
@@ -298,7 +337,7 @@ function BlockInMotion(id) {
             setSemiYText.value = newRadius;
             block1.offset = -Math.atan2(dY, dX);
 
-            redrawsTrajectory(newRadius, newRadius);
+            redrawsTrajectory(newRadius, newRadius, 0);
         }
     };
     var blockElementDrag3 = (e) => {

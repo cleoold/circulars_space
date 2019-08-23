@@ -169,6 +169,8 @@ div.moving-obj-trajectory {
     left: 50%;
     top: 50%;
     padding: 0;
+    transform: rotate(0);
+    -webkit-transform: rotate(0);
 }
 
 div.projections {
