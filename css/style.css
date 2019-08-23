@@ -32,6 +32,8 @@ body {
     overflow: hidden;
 }
 
+
+
 /* data input area */
 
 .info-container {
@@ -60,9 +62,29 @@ body {
     }
 }
 
-.info-container > h3 {
+.info-container > .obj-titles {
     grid-column: 1 / span 4;
-    margin-bottom: .5em;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-content: center;
+    align-content: center;
+    padding-top: 1em;
+    padding-bottom: .5em;
+    height: 2em;
+}
+
+.info-container > .obj-titles .switch-obj {
+    align-self: flex-start;
+    cursor: pointer;
+    line-height: 100%;
+    margin: auto;
+    padding: 1em 40% 1em 40%;
+}
+
+.info-container > .obj-titles .switch-obj:hover {
+    background-color: rgba(255, 255, 255, .1);
+    transition: background-color .3s ease;
+    -webkit-transition: background-color .3s ease;
 }
 
 .info-container > .box-label, .info-container > input[type="text"] {
@@ -240,12 +262,6 @@ div.moving-obj-prj {
 
 .obj-manage input[type="button"]:active {
     background-color: rgba(255, 255, 255, .4);
-}
-
-.obj-manage .objs-oneclick-go,
-.obj-manage .objs-oneclick-reset,
-.obj-manage br {
-    display: none;
 }
 
 /* description */

@@ -3,7 +3,7 @@
 <head>
     <!--uniform circular motion demo! ()cleoold-->
 
-    <title>Circular Motion Demo</title>
+    <title>Circular and elliptic motion interactive</title>
     <meta name="description" content="circular motion demo">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +11,9 @@
     <link rel="icon" href="./ahp.png" sizes="32x32">
 </head>
 
+<script type="text/javascript">
+if (/*@cc_on!@*/false || !!document.documentMode) document.write('Internet Explorer is not supported well. You can change a browser if this page isn\'t displaying correctly.');
+</script>
 
 <body>
     <header>
@@ -21,7 +24,11 @@
             <span>container width </span><input type="text" class="container-width" autocomplete="off" readonly />
         </div>
         <div id="info-container-1" class="info-container">
-            <h3>Block one</h3>
+            <div class="obj-titles">
+                <div class="switch-obj-prev switch-obj"> &lt;&lt;&lt; </div>
+                <h3>Block one</h3>
+                <div class="switch-obj-next switch-obj"> &gt;&gt;&gt; </div>
+            </div>
             <div class="box-label"><span>moving box X-axis</span></div>
             <input type="text" class="box-x" autocomplete="off" placeholder="leave this be :-)" readonly />
             <div class="box-label"><span>moving box Y-axis</span></div>

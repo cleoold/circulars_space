@@ -15,6 +15,14 @@ const movingObjProjection1 = document.querySelector('#moving-obj-prj-1');
 const oneClickGoBtn = document.querySelector('.obj-manage .objs-oneclick-go');
 const oneClickResetBtn = document.querySelector('.obj-manage .objs-oneclick-reset');
 const oneClickBtnsSeparator = document.querySelector('.obj-manage br');
+oneClickGoBtn.style.display = 'none';
+oneClickResetBtn.style.display = 'none';
+oneClickBtnsSeparator.style.display = 'none';
+
+var prevObjSelect = new Array();
+var nextObjSelect = new Array();
+// var prevBtnHandlers = too lazy do not want to do it is not needed
+var nextBtnHandlers = new Array();
 
 var circular1 = new BlockInMotion('1');
 
@@ -29,7 +37,8 @@ document.querySelector('.obj-manage .append-objs').addEventListener('click', (e)
     // create nodes
     var clonedInfoContainer = infoContainer1.cloneNode(true);
     clonedInfoContainer.id = `info-container-${CircularsCount}`;
-    clonedInfoContainer.children[0].innerText = `Block ${CircularsCount}`;
+    clonedInfoContainer.children[0].children[1].innerText = `Block ${CircularsCount}`;
+    clonedInfoContainer.style.display = 'none';
     grandContainer.insertBefore(clonedInfoContainer, container);
 
     var clonedMovingObj = movingObj1.cloneNode(true);
@@ -54,10 +63,24 @@ document.querySelector('.obj-manage .append-objs').addEventListener('click', (e)
     Circulars.push(bl);
 
     // displays the multi-ball control buttons
-    oneClickGoBtn.style.display = 'unset';
-    oneClickResetBtn.style.display = 'unset';
-    oneClickBtnsSeparator.style.display = 'unset';
-    window.scrollBy(0, 299);
+    if (CircularsCount == 2) {
+        oneClickGoBtn.style.display = '';
+        oneClickResetBtn.style.display = '';
+        oneClickBtnsSeparator.style.display = '';
+    }
+    //window.scrollBy(0, 299);
+
+    // activates the switch-previous-next buttons
+    const cc = CircularsCount
+    document.querySelector(`#info-container-${cc} .switch-obj-prev`).addEventListener('click', (e) => {
+        document.querySelector(`#info-container-${cc}`).style.display = 'none';
+        document.querySelector(`#info-container-${cc-1}`).style.display = 'grid';
+    });
+    nextBtnHandlers.push((e) => {
+        document.querySelector(`#info-container-${cc-1}`).style.display = 'none';
+        document.querySelector(`#info-container-${cc}`).style.display = 'grid';
+    });
+    document.querySelector(`#info-container-${cc-1} .switch-obj-next`).addEventListener('click', nextBtnHandlers[cc-2]);
 });
 
 document.querySelector('.obj-manage .delete-objs').addEventListener('click', (e) => {
@@ -66,11 +89,20 @@ document.querySelector('.obj-manage .delete-objs').addEventListener('click', (e)
     delete Circulars[Circulars.length - 1];
     Circulars.pop();
 
+    const infoBox = document.querySelector(`#info-container-${CircularsCount}`);
+    const prevInfoBox = document.querySelector(`#info-container-${CircularsCount-1}`);
+    const amIAtThisPage = infoBox.style.display != 'none';
+
     // remove nodes
-    document.querySelector(`#info-container-${CircularsCount}`).remove();
+    infoBox.remove();
     document.querySelector(`#moving-obj-${CircularsCount}`).remove();
     document.querySelector(`#moving-obj-trajectory-${CircularsCount}`).remove();
-    document.querySelector(`#moving-obj-prj-${CircularsCount}`).parentNode.remove()
+    document.querySelector(`#moving-obj-prj-${CircularsCount}`).parentNode.remove();
+
+    // unbind the next-button event for the previous one
+    document.querySelector(`#info-container-${CircularsCount-1} .switch-obj-next`).removeEventListener('click', nextBtnHandlers.pop());
+    // if user is now at this page, move to the previous page
+    if (amIAtThisPage) prevInfoBox.style.display = 'grid';
 
     if (--CircularsCount == 1) {
         // hides the multi-ball control buttons
@@ -78,7 +110,7 @@ document.querySelector('.obj-manage .delete-objs').addEventListener('click', (e)
         oneClickResetBtn.style.display = 'none';
         oneClickBtnsSeparator.style.display = 'none';
     }
-    window.scrollBy(0, -299);
+    //window.scrollBy(0, -299);
 });
 
 document.querySelector('.obj-manage .objs-oneclick-go').addEventListener('click', (e) => {
