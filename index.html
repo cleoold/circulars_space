@@ -5,9 +5,15 @@
 
     <title>Circular and elliptic motion interactive</title>
     <meta name="description" content="circular motion demo">
+    <meta name="keywords" content="circular elliptic motion physics demo" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/style.css" type="text/css" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="theme-color" content="#3d3d3d">
+    <meta name="renderer" content="webkit">
+    <!--full css files
+        <link rel="stylesheet" href="./css/style.css" type="text/css" />-->
+    <link rel="stylesheet" href="./css/min.css" type="text/css" />
     <link rel="icon" href="./ahp.png" sizes="32x32">
 </head>
 
@@ -19,6 +25,7 @@ if (/*@cc_on!@*/false || !!document.documentMode) document.write('Internet Explo
     <header>
         <h1><del>Uniform</del> circular motion demo</h1>
     </header>
+    <a href="./index_cn.html" class="switch-lang">中</a>
     <article class="grand-container">
         <div class="shared-info-container">
             <span>container width </span><input type="text" class="container-width" autocomplete="off" readonly />
@@ -82,7 +89,7 @@ if (/*@cc_on!@*/false || !!document.documentMode) document.write('Internet Explo
                 'size' box. The period is the time taken for the ball
                 to complete one complete circle and it should be in seconds. The semi-X-axis and semi-Y-axis is up to
                 the size of your
-                window. Note when semi-X equals to semi-Y, it will do a circular motion.<span class="bold">However,
+                window. Note when semi-X equals to semi-Y, it will do a circular motion. <span class="bold">However,
                 </span>don't worry yet, these values are
                 automatically filled with default ones so you can just press the 'Go' button to see its motion! It will
                 be
@@ -91,7 +98,7 @@ if (/*@cc_on!@*/false || !!document.documentMode) document.write('Internet Explo
                 <br /><span class="bold">Hint2: </span>you can actually drag the ball to set its initial position!
             </p>
             <p>
-                You can vary the period or semi-X/Y linearly by setting the delta value. For example, by setting Rx
+                You can vary the period, semi-X/Y or rotation linearly by setting the delta value. For example, by setting Rx
                 delta
                 with 10, the ball's rotating semi-X-axis will increase
                 every second with an amount of 10px, until it hits the boundary. Visually it will be more and more flat.
@@ -108,6 +115,15 @@ if (/*@cc_on!@*/false || !!document.documentMode) document.write('Internet Explo
                 semi-Y-axis and Rx(t) = Rx₀+t⋅ΔRx, Ry(t) = Ry₀+t⋅ΔRy, T is
                 the period with T(t) = T₀+t⋅ΔT, and 𝜑 is the offset.
             </p>
+            <p>
+                By applying a rotation matrix onto this vector can cause the ball's trajectory to rotate:
+                <span class="equation">rotated[x, y](t) = [x(t)⋅cosα-y(t)⋅sinα, x(t)⋅sinα+y(t)⋅cosα]</span>
+                and α(t) = α₀+Δα is the rotation angle.
+            </p>
+            You can spawn multiple objects to make beautiful effects.
+        </div>
+        <div class="samples-display">
+            <h5>Click see/hide examples</h5>
         </div>
         <hr />
         <div class="shared-info-container-bo">
@@ -115,7 +131,7 @@ if (/*@cc_on!@*/false || !!document.documentMode) document.write('Internet Explo
             <input type="button" class="fps-decrease" value="decrease" />
             <input type="button" class="fps-increase" value="increase" />
             <br /><br />
-            <input type="button" class="cancel-bg-change" value="pause background" />
+            If slow you can <input type="button" class="cancel-bg-change" value="pause background" />
         </div>
     </article>
     <footer>
@@ -125,6 +141,10 @@ if (/*@cc_on!@*/false || !!document.documentMode) document.write('Internet Explo
     </footer>
 </body>
 
+<!-- full js files
 <script type="text/javascript" src="./js/bg.js"></script>
 <script type="text/javascript" src="./js/movingbox.js"></script>
 <script type="text/javascript" src="./js/movingboxmany.js"></script>
+<script type="text/javascript" src="./js/req.js"></script>
+-->
+<script type="text/javascript" src="./js/min.js"></script>

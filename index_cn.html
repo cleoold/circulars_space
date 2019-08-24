@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<head>
+    <!--uniform circular motion demo! ()cleoold-->
+
+    <title>匀速圆周运动demo by cos</title>
+    <meta name="description" content="匀速圆周运动demo">
+    <meta name="keywords" content="匀速圆周运动 椭圆运动 demo 物理" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="theme-color" content="#3d3d3d">
+    <meta name="renderer" content="webkit">
+    <meta content="telephone=no" name="format-detection">
+    <link rel="stylesheet" href="./css/min.css" type="text/css" />
+    <link rel="icon" href="./ahp.png" sizes="32x32">
+</head>
+
+<script type="text/javascript">
+    if (/*@cc_on!@*/false || !!document.documentMode) document.write('Internet Explorer 可能不兼容此程序. 建议您更换浏览器来浏览.');
+</script>
+
+<body>
+    <header>
+        <h1>圆周运动 by cos</h1>
+    </header>
+    <a href="./index.html" class="switch-lang">English</a>
+    <article class="grand-container">
+        <div class="shared-info-container">
+            <span>容器尺寸 </span><input type="text" class="container-width" autocomplete="off" readonly />
+        </div>
+        <div id="info-container-1" class="info-container">
+            <div class="obj-titles">
+                <div class="switch-obj-prev switch-obj"> &lt;&lt;&lt; </div>
+                <h3>物块一</h3>
+                <div class="switch-obj-next switch-obj"> &gt;&gt;&gt; </div>
+            </div>
+            <div class="box-label"><span>X轴坐标</span></div>
+            <input type="text" class="box-x" autocomplete="off" placeholder="leave this be :-)" readonly />
+            <div class="box-label"><span>Y轴坐标</span></div>
+            <input type="text" class="box-y" autocomplete="off" placeholder="leave this be :-)" readonly />
+            <div class="box-label"><span>物块颜色</span></div>
+            <input type="text" class="set-color" autocomplete="off" />
+            <div class="box-label"><span>物块直径(px)</span></div>
+            <input type="text" class="set-size" autocomplete="off" />
+            <div class="box-label"><span>轨道X半轴(px)</span></div>
+            <input type="text" class="set-semi-X-axis" autocomplete="off" />
+            <div class="box-label"><span>Rx Δ(px/sec)</span></div>
+            <input type="text" class="set-semi-X-axis-change" autocomplete="off" />
+            <div class="box-label"><span>轨道Y半轴(px)</span></div>
+            <input type="text" class="set-semi-Y-axis" autocomplete="off" />
+            <div class="box-label"><span>Ry Δ(px/s)</span></div>
+            <input type="text" class="set-semi-Y-axis-change" autocomplete="off" />
+            <div class="box-label"><span>轨道周期(s)</span></div>
+            <input type="text" class="set-period" autocomplete="off" />
+            <div class="box-label"><span>T Δ(s/s)</span></div>
+            <input type="text" class="set-period-change" autocomplete="off" />
+            <div class="box-label"><span>轨道偏移角(deg)</span></div>
+            <input type="text" class="set-angle" autocomplete="off" />
+            <div class="box-label"><span>α Δ(deg/s)</span></div>
+            <input type="text" class="set-angle-change" autocomplete="off" />
+
+            <div class="buttons">
+                <input type="button" class="set-attr-go" value="Go!" />
+                <input type="button" class="set-attr-reset" value="重置" />
+            </div>
+        </div>
+        <div id="container">
+            <div id="moving-obj-trajectory-1" class="moving-obj-trajectory"></div>
+            <div id="origin"></div>
+            <div id="moving-obj-1" class="moving-obj"></div>
+        </div>
+        <div class="projections">
+            <div id="moving-obj-prj-1" class="moving-obj-prj"></div>
+        </div>
+        <div class="obj-manage">
+            <input type="button" class="objs-oneclick-go" value="确定所有" />
+            <input type="button" class="objs-oneclick-reset" value="重置所有" />
+            <br />
+            <input type="button" class="append-objs" value="增加" />
+            <input type="button" class="delete-objs" value="移除" />
+        </div>
+        <div class="description">
+            <p>
+                <span class="bold">提示：</span>这个 app 展示了一个围绕着原点旋转的球. 首先您要设置球的颜色：可以是 yellow,
+                blue, violet 甚至是 rgba(255,255,255,0.5). 然后再在“物块直径”里设置它的尺寸（5 到 30）. 周期描述一个球旋转一周所需要的时间，单位是秒.
+                X半轴和Y半轴对应着长短半轴，这个设定的最大值由您的窗口大小决定. 注意当两个值相同的时候，物块会做匀速圆周运动. <span class="bold">不过不要担心
+                </span>，这些值都已经自动填好了，所以您可以直接点击“确定”.
+                <br /><span class="bold">提示2：</span>负的周期值可以产生一个逆时针旋转.
+                <br /><span class="bold">提示3：</span>您可以通过拖动小球来改变它的初始位置！
+            </p>
+            <p>
+                您可以通过差值来在每秒钟线性地改变周期/半轴长/旋转角. 比如设置X半轴差为 10 可以让小球的X半轴每秒增加 10px（直到它撞到边界）可以让小球看起来越来越扁. 您可以尝试其他区域来看看会发生什么.
+                当然，此时小球就不再做匀速运动了.
+            </p>
+            <p>
+                <span class="bold">小球的轨迹</span>用一个以 t（时间）为参数的参数方程来描述：
+                <span class="equation">x(t) = Rx(t)⋅cos(𝜔(t)⋅t-𝜑) = Rx(t)⋅cos(2π/T(t)⋅t-𝜑)</span>
+                <span class="equation">y(t) = Ry(t)⋅sin(𝜔(t)⋅t-𝜑) = Ry(t)⋅sin(2π/T(t)⋅t-𝜑)</span>
+                加上小球所在容器的修正. 其中 Rx 或 Ry 为X半轴或Y半轴且 Rx(t) = Rx₀+t⋅ΔRx, Ry(t) = Ry₀+t⋅ΔRy, T 为周期且 T(t) = T₀+t⋅ΔT, 𝜑 是初相.
+            </p>
+            <p>
+                使用旋转矩阵作用到它可以旋转小球的轨迹，其中 α(t) = α₀+Δα 为偏移角：
+                <span class="equation">rotated[x, y](t) = [x(t)⋅cosα-y(t)⋅sinα, x(t)⋅sinα+y(t)⋅cosα]</span>
+            </p>
+            您可以生成多个这样的小球来实现炫目的效果.
+        </div>
+        <div class="samples-display">
+            <h5>点击查看/隐藏样例</h5>
+        </div>
+        <hr />
+        <div class="shared-info-container-bo">
+            <span>刷新率：</span><span>25</span>
+            <input type="button" class="fps-decrease" value="-减少" />
+            <input type="button" class="fps-increase" value="+增加" />
+            <br /><br />
+            如果显示卡顿您可以 <input type="button" class="cancel-bg-change" value="暂停背景变化" />
+        </div>
+    </article>
+    <footer>
+        <br />
+        (c) 2019 cleooldsaty. <a href="https://github.com/cleoold/uniform_circular_motion" target="_blank">Github</a>
+    </footer>
+</body>
+
+<script type="text/javascript" src="./js/min.js"></script>

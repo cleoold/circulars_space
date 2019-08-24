@@ -33,6 +33,15 @@ body {
 }
 
 
+/* switch language */
+
+.switch-lang {
+    display: block;
+    position: absolute;
+    text-decoration: none;
+    left: 85%;
+}
+
 
 /* data input area */
 
@@ -79,6 +88,10 @@ body {
     line-height: 100%;
     margin: auto;
     padding: 1em 40% 1em 40%;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select:none;
 }
 
 .info-container > .obj-titles .switch-obj:hover {
@@ -325,4 +338,25 @@ hr {
 
 footer {
     margin: 1em 0 1.5em 0;
+}
+
+/* show samples */
+
+.samples-display {
+    width: 40%;
+    margin-bottom: 1em;
+}
+
+.samples-display h5 {
+    cursor: pointer;
+}
+
+.samples-display img {
+    width: 100%;
+}
+
+@media only screen and (max-width:850px) {
+    .samples-display {
+        width: 90%;
+    }
 }
