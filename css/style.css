@@ -199,13 +199,19 @@ div.moving-obj {
 
 div.moving-obj-trajectory {
     position: absolute;
-    border: .6px dashed rgba(255, 255, 255, .13);
+    border: .6px dashed rgba(255, 255, 255, .18);
     border-radius: 50%;
     left: 50%;
     top: 50%;
     padding: 0;
     transform: rotate(0);
     -webkit-transform: rotate(0);
+}
+
+@media only screen and (max-width:600px) {
+    div.moving-obj-trajectory {
+        border-width: 1px;
+    }
 }
 
 div.projections {
