@@ -199,7 +199,8 @@ div.moving-obj {
 
 div.moving-obj-trajectory {
     position: absolute;
-    border: .6px dashed rgba(255, 255, 255, .18);
+    border: .6px dashed;
+    border-color: rgba(255,255,255,.18) !important;
     border-radius: 50%;
     left: 50%;
     top: 50%;
