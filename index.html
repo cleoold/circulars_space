@@ -18,7 +18,7 @@
 </head>
 
 <script type="text/javascript">
-if (/*@cc_on!@*/false || !!document.documentMode) document.write('Internet Explorer is not supported well. You can change a browser if this page isn\'t displaying correctly.');
+    if (/*@cc_on!@*/false || !!document.documentMode) document.write('Internet Explorer is not supported well. You can change a browser if this page isn\'t displaying correctly.');
 </script>
 
 <body>
@@ -60,6 +60,11 @@ if (/*@cc_on!@*/false || !!document.documentMode) document.write('Internet Explo
             <input type="text" class="set-angle" autocomplete="off" />
             <div class="box-label"><span>α Δ(deg/sec)</span></div>
             <input type="text" class="set-angle-change" autocomplete="off" />
+            <div class="box-label"><span>rotate around</span></div>
+            <select name class="set-rotate-around">
+                <option value="origin">origin</option>
+                <option value="focus">focus</option>
+            </select>
 
             <div class="buttons">
                 <input type="button" class="set-attr-go" value="Go!" />
@@ -98,10 +103,18 @@ if (/*@cc_on!@*/false || !!document.documentMode) document.write('Internet Explo
                 <br /><span class="bold">Hint2: </span>you can actually drag the ball to set its initial position!
             </p>
             <p>
-                You can vary the period, semi-X/Y or rotation linearly by setting the delta value. For example, by setting Rx
+                <br /><span class="bold">For elliptic motions: </span>setting the 'rotate around' to 'origin' will let
+                the ball's trajectory be centered. You can set it
+                to 'focus' so that it circulates around one of its focus, which is the more realistic case. Note this
+                option doesn't make a difference for circular trajectories.
+            </p>
+            <p>
+                You can vary the period, semi-X/Y or rotation linearly by setting the delta value. For example, by
+                setting Rx
                 delta
                 with 10, the ball's rotating semi-X-axis will increase
-                every second with an amount of 10px, until it hits the boundary. Visually it will be more and more flat.
+                every second with an amount of 10px, until it hits our set boundary (2x the container length). Visually
+                it will be more and more flat.
                 You can try out other fields to see
                 what would happen. Of course, in this case the motion
                 is not longer a uniform motion.
@@ -132,6 +145,8 @@ if (/*@cc_on!@*/false || !!document.documentMode) document.write('Internet Explo
             <input type="button" class="fps-increase" value="increase" />
             <br /><br />
             If slow you can <input type="button" class="cancel-bg-change" value="pause background" />
+            <br /><br />
+            or enable <input type="button" class="cancel-bg-change-and-enable-star" value="star background" />
         </div>
     </article>
     <footer>

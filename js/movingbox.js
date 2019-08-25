@@ -45,10 +45,17 @@ window.addEventListener('resize', onChangeContainerSize);
 
 function degToRadian(deg) { return Math.PI * deg / 180;}
 
+function radianToDeg(rad) { return rad * 180 / Math.PI;}
+
 function rotateX(x, y, rad) { return Math.cos(rad) * x - Math.sin(rad) * y;}
 
 function rotateY(x, y, rad) { return Math.sin(rad) * x + Math.cos(rad) * y;}
 
+/**
+ * the block waiting to be rendered. its info is in x-y coordinate and is not corrected for container (which uses top-left)
+ * @function Block
+ * @constructor
+ */
 function Block(initOffset = 0, initPeriod = 0, initSemiX = 0, initSemiY = 0, initRotate = 0) {
     this.offset = initOffset;
     this.initPeriod = initPeriod;
@@ -62,11 +69,26 @@ function Block(initOffset = 0, initPeriod = 0, initSemiX = 0, initSemiY = 0, ini
     this.rotate = (t) => this.initRotate; // deg
     this.yieldX = (t) => this.semiX(t) * Math.cos(this.omega(t) * t - this.offset);
     this.yieldY = (t) => this.semiY(t) * Math.sin(this.omega(t) * t - this.offset);
+    /**
+     * yields the information of the block's current location
+     * @method yieldRotated
+     * @for Block
+     * @return x:final x axis, y:final y axis,rx:signed semi-x-axis length, ry:signed semi-y-axis length, 
+     *         rad:rotation angle in radians, deg:rotation angle in deg
+     */
     this.yieldRotated = (t) => {
         let x = this.yieldX(t);
         let y = this.yieldY(t);
-        let rad = degToRadian(this.rotate(t));
-        return [rotateX(x,y,rad), rotateY(x,y,rad)];
+        let deg = this.rotate(t);
+        let rad = degToRadian(deg);
+        return {
+            x: rotateX(x,y,rad),
+            y: rotateY(x,y,rad),
+            rx: this.semiX(t),
+            ry: this.semiY(t),
+            rad: rad,
+            deg: deg
+        };
     }
 }
 
@@ -74,6 +96,14 @@ function Block(initOffset = 0, initPeriod = 0, initSemiX = 0, initSemiY = 0, ini
 
 var intervals = 40;
 
+/**
+ * the rendered block
+ * @function BlockInMotion
+ * @param {Number} id specifies the index number of the spawned block
+ * @return {Block}a newly spawned moving block
+ * 
+ * usage var x = new BlockInMotion(1)
+ */
 function BlockInMotion(id) {
     var block1 = new Block();
     const blockElement = document.querySelector(`div#moving-obj-${id}`);
@@ -91,11 +121,13 @@ function BlockInMotion(id) {
     const setSemiXLDeltaText = document.querySelector(`#info-container-${id} .set-semi-X-axis-change`);
     const setSemiYLDeltaText = document.querySelector(`#info-container-${id} .set-semi-Y-axis-change`);
     const setRotateLDeltaText = document.querySelector(`#info-container-${id} .set-angle-change`);
+    const setRotateAroundSelect = document.querySelector(`#info-container-${id} .set-rotate-around`);
     const enterBtn = document.querySelector(`#info-container-${id} .set-attr-go`);
     const resetBtn = document.querySelector(`#info-container-${id} .set-attr-reset`);
     var maxRadiusInContainer = 0;
     var timer = 0;
     var rendered = null;
+    var isFocus = false;
 
     var dragFlag = false;
     var blockElementIniX = 0;
@@ -105,7 +137,7 @@ function BlockInMotion(id) {
     function setDefaultValsForCircle(e, resetColor=true) {
         timer = 0;
         maxRadiusInContainer = containerLength / 2;
-        setSizeText.value = 20;
+        setSizeText.value = 15;
         setPeriodText.value = 5;
         setSemiXText.value = maxRadiusInContainer / 2;
         setSemiYText.value = maxRadiusInContainer / 2;
@@ -114,18 +146,23 @@ function BlockInMotion(id) {
         setSemiXLDeltaText.value = 0;
         setSemiYLDeltaText.value = 0;
         setRotateLDeltaText.value = 0;
+        setRotateAroundSelect.value = 'origin';
+        isFocus = false;
 
         // this value should be 'corrected' like below in rendering, but since this is default case
         // where the moving obj is always 20px, just set the percentage. users will not notice
         blockElement.style.left = '49.1%';
         blockElement.style.top = '48.9%';
-        blockElement.style.width = '20px';
-        blockElement.style.height = '20px';
+        blockElement.style.width = '15px';
+        blockElement.style.height = '15px';
 
         blockPrjElement.style.left = '49.1%';
 
         blockTrajectoryElement.style.width = '0px';
         blockTrajectoryElement.style.height = '0px';
+        blockTrajectoryElement.style.left = '0px';
+        blockTrajectoryElement.style.top = '0px';
+        blockTrajectoryElement.style.borderColor = 'rgba(255,255,255,.18) !important';
 
         if (resetColor) {
             setColorText.value = 'yellow';
@@ -137,6 +174,10 @@ function BlockInMotion(id) {
         rendered = null;
     }
 
+    function blockOffBoundaryLax(x, y, o) {
+        return x < -containerLength || x > containerLength*2 || y < -containerLength || y > containerLength*2;
+    } // this version allows the object to fly out of the boundary
+
     function blockOffBoundary(x, y, o) {                                                        // |
         return x < 0 || x > containerLength - o || y < 0 || y > containerLength - 1.1 * o;      // |
     }                                                                                           // |
@@ -146,25 +187,42 @@ function BlockInMotion(id) {
     // also renders semiX/semiY trajectory                                                      // |
     function rendersBlock() {                                                                   // |
         timer += intervals;                                                                     // |
-        var realTimer = timer / 1000; // intriguing geometry. i do not like                     // |
+        let realTimer = timer / 1000; // intriguing geometry. i do not like                     // |
         let o = parseFloat(blockElement.style.width);
         let correction = maxRadiusInContainer - o / 2;
         const coordinateSet = block1.yieldRotated(realTimer);
-        var x = coordinateSet[0] + correction;
-        var y = coordinateSet[1] + correction;
+        let x = coordinateSet.x + correction;
+        let y = coordinateSet.y + correction;
+
+        if (isFocus) { // if ellipse circulates around the focus, shift
+            let rad = coordinateSet.rad;
+            if (Math.abs(coordinateSet.rx) >= Math.abs(coordinateSet.ry)) {
+                let c = Math.sqrt(coordinateSet.rx ** 2 - coordinateSet.ry ** 2);
+                var dX = c * Math.cos(rad);
+                var dY = c * Math.sin(rad);
+            } else {
+                let c = Math.sqrt(coordinateSet.ry ** 2 - coordinateSet.rx ** 2);
+                var dX = c * Math.sin(-rad);
+                var dY = c * Math.cos(rad); // should also be -rad, but cos function is even
+            }
+            x += dX;
+            y += dY;
+        }
         // ON ACCELERATION, if object exceeds the container, halt it at the boundary
-        if (blockOffBoundary(x, y, o)) {
+        if (blockOffBoundaryLax(x, y, o)) {
             block1.initSemiX = maxRadiusInContainer;
             block1.SemiX = (t) => block1.initSemiX;
             block1.initSemiY = maxRadiusInContainer;
             block1.SemiY = (t) => block1.initSemiY;
             block1.initPeriod = 0;
             block1.period = (t) => block1.initPeriod;
-            block1.initRotate = 0;
+            //block1.initRotate = 0;
             block1.rotate = (t) => block1.initRotate;
             setSemiXLDeltaText.value = 0;
             setSemiYLDeltaText.value = 0;
             setPeriodText.value = 0;
+            movingBoxXText.value = 'stopped';
+            movingBoxYText.value = 'stopped';
             return;
         }
         blockElement.style.left = floatToPx(x);
@@ -174,19 +232,23 @@ function BlockInMotion(id) {
 
         blockPrjElement.style.left = floatToPx(x);
 
-        redrawsTrajectory(block1.semiX(realTimer), block1.semiY(realTimer), block1.rotate(realTimer));
+        // displays the trajectory as the ball moves
+        redrawsTrajectory(coordinateSet.rx, coordinateSet.ry, coordinateSet.deg);
+        if (isFocus)
+            redrawsTrajectory(coordinateSet.rx, coordinateSet.ry, coordinateSet.deg, dX, dY);
 
         rendered = setTimeout(rendersBlock, intervals);
     }
 
-    function redrawsTrajectory(semiX, semiY, deg) {
+    // draws the trajectory with given semiX, semiY and rotation angle in deg. can supply with its additional X, Y offsets
+    function redrawsTrajectory(semiX, semiY, deg, dX=0, dY=0) {
         semiX = Math.abs(semiX);
         semiY = Math.abs(semiY);
         blockTrajectoryElement.style.width = floatToPx(semiX * 2);
         blockTrajectoryElement.style.height = floatToPx(semiY * 2);
         let leftTopPos = parseFloat(window.getComputedStyle(container).width) / 2;
-        blockTrajectoryElement.style.left = floatToPx(leftTopPos - semiX);
-        blockTrajectoryElement.style.top = floatToPx(leftTopPos - semiY);
+        blockTrajectoryElement.style.left = floatToPx(leftTopPos - semiX + dX);
+        blockTrajectoryElement.style.top = floatToPx(leftTopPos - semiY + dY);
         blockTrajectoryElement.style.transform = `rotate(${deg}deg)`;
         blockTrajectoryElement.style.WebkitTransform = `rotate(${deg}deg)`;
     }
@@ -201,7 +263,7 @@ function BlockInMotion(id) {
         if (block1.initSemiY > maxRadiusInContainer)
             block1.initSemiY = maxRadiusInContainer;
         if ('ontouchstart' in document.documentElement) return;
-        // irrelevant. on mobile, when scrolling the page the semiX/semiY is set to 0 which is wired. fix it here in this if.
+        // irrelevant. on mobile, when scrolling the page the semiX/semiY is set to 0 which is weird. fix it here in this if.
         setSemiXText.value = block1.initSemiX;
         setSemiYText.value = block1.initSemiY;
     });
@@ -220,6 +282,15 @@ function BlockInMotion(id) {
         setRotateText.value = block1.rotate(timer / 1000);
     });
 
+    // by changing the 'rotate around', we can make the ball circulate around origin, or focus (apply to ellipses)
+    //     updates the isFocus
+    setRotateAroundSelect.addEventListener('change', (e) => {
+        let option = setRotateAroundSelect.value;
+        if (option == 'origin') isFocus = false;
+        else isFocus = true;
+    });
+
+    // by clicking go button, start rotating the ball
     enterBtn.addEventListener('click', function triggerCircleMotion(e) {
         // check color and size boxes
         const setSizeTextVal = parseFloat(setSizeText.value)
@@ -295,6 +366,7 @@ function BlockInMotion(id) {
         rendered = setTimeout(rendersBlock, intervals);
         enterBtn.value = 'Change!';
     });
+    // by clicking reset, stop the ball and reset the form
     resetBtn.addEventListener('click', (e) => {
         clearTimeout(rendered);
         block1 = null;

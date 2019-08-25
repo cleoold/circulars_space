@@ -59,6 +59,11 @@
             <input type="text" class="set-angle" autocomplete="off" />
             <div class="box-label"><span>α Δ(deg/s)</span></div>
             <input type="text" class="set-angle-change" autocomplete="off" />
+            <div class="box-label"><span>围绕...旋转</span></div>
+            <select name class="set-rotate-around">
+                <option value="origin">原点</option>
+                <option value="focus">焦点</option>
+            </select>
 
             <div class="buttons">
                 <input type="button" class="set-attr-go" value="Go!" />
@@ -90,8 +95,12 @@
                 <br /><span class="bold">提示3：</span>您可以通过拖动小球来改变它的初始位置！
             </p>
             <p>
-                您可以通过差值来在每秒钟线性地改变周期/半轴长/旋转角. 比如设置X半轴差为 10 可以让小球的X半轴每秒增加 10px（直到它撞到边界）可以让小球看起来越来越扁. 您可以尝试其他区域来看看会发生什么.
-                当然，此时小球就不再做匀速运动了.
+                <br /><span class="bold">对于椭圆运动：</span>将围绕设置为“原点”可以居中小球的轨道. 您可以将它设置为“焦点”从而使小球围绕着焦点的一个旋转，
+                这样看着更加真实. 注意这个选项在圆形轨道下不起作用.
+            </p>
+            <p>
+                您可以通过差值来在每秒钟线性地改变周期/半轴长/旋转角. 比如设置X半轴差为 10 可以让小球的X半轴每秒增加 10px（直到它撞到设定好的边界——2 倍的容器宽）
+                这让小球看起来越来越扁. 您可以尝试其他区域来看看会发生什么. 当然，此时小球就不再做匀速运动了.
             </p>
             <p>
                 <span class="bold">小球的轨迹</span>用一个以 t（时间）为参数的参数方程来描述：
@@ -115,6 +124,8 @@
             <input type="button" class="fps-increase" value="+增加" />
             <br /><br />
             如果显示卡顿您可以 <input type="button" class="cancel-bg-change" value="暂停背景变化" />
+            <br /><br />
+            或者开启 <input type="button" class="cancel-bg-change-and-enable-star" value="星空背景" />
         </div>
     </article>
     <footer>

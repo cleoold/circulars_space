@@ -24,7 +24,7 @@ var nextObjSelect = new Array();
 // var prevBtnHandlers = too lazy do not want to do it is not needed
 var nextBtnHandlers = new Array();
 
-var circular1 = new BlockInMotion('1');
+var circular1 = new BlockInMotion(1);
 
 // manage multiple circulations (max 1+5=6)
 var CircularsCount = 1;
