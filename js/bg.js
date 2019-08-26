@@ -41,16 +41,18 @@ document.querySelector('.cancel-bg-change-and-enable-star').addEventListener('cl
 
     // change origin display styles, add lights
     const colors = [
-        '1px 1px 15px 8px rgba(255,144,61,.89)',
-        '1px 1px 15px 8px rgba(255,100,61,.93)',
-        '1px 1px 15px 8px rgba(255,88,61,.89)',
-        '1px 1px 15px 8px rgba(255,88,61,.5)',
-        '1px 1px 15px 8px rgba(255,100,61,.89)',
-        '1px 1px 15px 8px rgba(255,144,61,.77)',
+        '1px 1px 15px 6px rgba(255,144,61,.89)',
+        '1px 1px 15px 6px rgba(255,100,61,.93)',
+        '1px 1px 15px 6px rgba(255,88,61,.89)',
+        '1px 1px 15px 6px rgba(255,88,61,.5)',
+        '1px 1px 15px 6px rgba(255,100,61,.89)',
+        '1px 1px 15px 6px rgba(255,144,61,.77)',
     ];
     let i = 0;
     const origin = document.querySelector('#origin');
-    origin.style.backgroundColor = 'orange';
+    origin.style.background = 'radial-gradient( rgb(255,208,0) 1%, rgb(255,151,0) 39%, rgb(249,183,0) 39%, rgb(223,77,23) 100%)';
+    origin.style.width = '8px';
+    origin.style.height = '8px';
     setTimeout(function loopSunColor() {
         if (++i == 6) i =0;
         origin.style.boxShadow = colors[i];
