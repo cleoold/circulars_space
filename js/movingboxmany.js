@@ -115,10 +115,10 @@ document.querySelector('.obj-manage .delete-objs').addEventListener('click', (e)
 
 document.querySelector('.obj-manage .objs-oneclick-go').addEventListener('click', (e) => {
     var btns = document.querySelectorAll('.info-container .set-attr-go');
-    for (each of btns) each.click();
+    for (let each of btns) each.click();
 });
 
 document.querySelector('.obj-manage .objs-oneclick-reset').addEventListener('click', (e) => {
     var btns = document.querySelectorAll('.info-container .set-attr-reset');
-    for (each of btns) each.click();
+    for (let each of btns) each.click();
 });

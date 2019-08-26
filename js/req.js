@@ -17,13 +17,13 @@ samplesClickDisplay.addEventListener('click', (e) => {
             './assets/uniformcircular3.gif',
             './assets/uniformcircular4.gif'
         ];
-        for (url of urls) {
+        for (let url of urls) {
             let imgContainer = document.createElement('img');
             imgContainer.src = url;
             document.querySelector('.samples-display').appendChild(imgContainer);
         }
     } else {
-        for (each of document.querySelectorAll('.samples-display img'))
+        for (let each of document.querySelectorAll('.samples-display img'))
             each.remove();
     }
     samplesShown = !samplesShown;

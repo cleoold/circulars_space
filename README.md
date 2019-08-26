@@ -26,7 +26,35 @@ uniform (probably not so uniform because it supports linear acceleration) circul
 
 see demo at https://cleoold.github.io/uniform_circular_motion/index.html
 
-Some special points to point:
+#### Interesting setups
+
+* two uniform circular motions
+  * Block 1: 
+    semi X axis:166, Rx Δ: 0, semi Y axis: 166, Ry Δ: 0, period: 10, T Δ: 0, rotate angle: 0, α Δ: 0, rotate around: origin
+  * Block 2:
+    96, 0, 96, 0, 10, 0, 0, 0, origin
+* two springs perpendicular to each other and rotating
+  * Block 1:
+    162, 0, 0, 0, 5, 0, 0, 10, origin
+  * Block 2:
+    0, 0, 162, 0, 5, 0, 0, 10, origin
+* one oscillation and a bigger rotating ellipse
+  * Block 1:
+    50, 0, 0, 0, 1, 0, 0, 0, origin
+  * Block 2:
+    180, 0, 80, 0, 5, 0, 0, 30, origin
+* chaotic comet with unknown trajectory
+  * Block 1:
+    80, 0, 80, -10, 2, 0, 0, 30, focus
+* planets
+  * Block 1: 50, 0, 50, 0, 5, 0, 0, 0, origin
+  * Block 2: 60, 0, 59, 0, 10, 0, 0, 0, focus
+  * Block 3: 80, 0, 75, 0, 22, 0, 0, 0, focus
+  * Block 4: 90, 0, 82, 0, 5, 0, 0, 0, focus
+  * Block 5: 162, 0, 122, 0, 5, 0, 0, 0, focus
+  * Block 6: 271, 0, 271, 0, -10, 0, 0, 0, origin
+
+##### Some special points to point:
 
 * The size of the container (which contains balls) will change based on the change of the window size while the ball preserves its semi-X-axis and semi-Y-axis (or radius) of circular motion. If the ball hits the boundary it will stop.
 * The layout is optimized(?) for the screen size of the device.
@@ -38,5 +66,9 @@ Some special points to point:
 #### Not compatible with
 * Dark reader (trajectory randomly goes missing)
 
+
+
+
+
 #### License
-* I have not yet decided.
+* [CC BY-NC-SA 4.0](http://creativecommons.org/licenses/by-nc-sa/4.0/)
