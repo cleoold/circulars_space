@@ -62,6 +62,7 @@ see demo at https://cleoold.github.io/uniform_circular_motion/index.html
 * When reset, the semi-X-axis and semi-Y-axis of circular motion is set default to half of the container length.
 * If the semi-X-axis or semi-Y-axis changes when the ball is in motion, the text in the `semi-X-axis(px)` or `semi-Y-axis(px)` box does not change; but when the user clicks the text box, it changes to the newest value. Same for period.
 * `one-click` options are hidden if there is only one ball present.
+* if `star background` is enabled, overflowing contents in the container will display.
 
 #### Not compatible with
 * Dark reader (trajectory randomly goes missing)

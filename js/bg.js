@@ -38,6 +38,7 @@ document.querySelector('.cancel-bg-change-and-enable-star').addEventListener('cl
     pHtml.style.backgroundPosition = 'center center';
     pHtml.style.backgroundAttachment = 'fixed';
     document.querySelector('#container').style.backgroundColor = 'unset';
+    document.querySelector('#container').style.overflow = 'unset';
 
     // change origin display styles, add lights
     const colors = [
