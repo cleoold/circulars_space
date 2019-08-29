@@ -100,7 +100,7 @@ var intervals = 40;
  * the rendered block
  * @function BlockInMotion
  * @param {Number} id specifies the index number of the spawned block
- * @return {Block}a newly spawned moving block
+ * @return {BlockInMotion} a newly spawned moving block
  * 
  * usage var x = new BlockInMotion(1)
  */
@@ -380,14 +380,14 @@ function BlockInMotion(id) {
     // box draggable at beginning
     // can set radius and offset (offset is implicit)
 
-    var blockElementDrag1 = (e) => {
+    function blockElementDrag1(e) {
         e = e || window.event;
         e.preventDefault();
         blockElementIniX = (e.clientX || e.touches[0].clientX) - blockElement.offsetLeft;
         blockElementIniY = (e.clientY || e.touches[0].clientY) - blockElement.offsetTop;
         dragFlag = true;
     };
-    var blockElementDrag2 = (e) => {
+    function blockElementDrag2(e) {
         if (dragFlag) {
             e = e || window.event;
             e.preventDefault();
@@ -412,7 +412,7 @@ function BlockInMotion(id) {
             redrawsTrajectory(newRadius, newRadius, 0);
         }
     };
-    var blockElementDrag3 = (e) => {
+    function blockElementDrag3(e) {
         dragFlag = false;
         blockElementIniX = 0;
         blockElementIniY = 0;
@@ -428,6 +428,11 @@ function BlockInMotion(id) {
         container.addEventListener('touchmove', blockElementDrag2);
         container.addEventListener('touchend', blockElementDrag3);
     }
+
+    this.cleanUp = function() {
+        clearTimeout(rendered);
+        block1 = null;
+    };
 }
 
 

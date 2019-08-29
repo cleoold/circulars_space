@@ -19,16 +19,16 @@ oneClickGoBtn.style.display = 'none';
 oneClickResetBtn.style.display = 'none';
 oneClickBtnsSeparator.style.display = 'none';
 
-var prevObjSelect = new Array();
-var nextObjSelect = new Array();
+var prevObjSelect = [];
+var nextObjSelect = [];
 // var prevBtnHandlers = too lazy do not want to do it is not needed
-var nextBtnHandlers = new Array();
+var nextBtnHandlers = [];
 
 var circular1 = new BlockInMotion(1);
 
 // manage multiple circulations (max 1+5=6)
 var CircularsCount = 1;
-var Circulars = new Array();
+var Circulars = [];
 
 document.querySelector('.obj-manage .append-objs').addEventListener('click', (e) => {
     if (CircularsCount >= 6) return;
@@ -86,7 +86,7 @@ document.querySelector('.obj-manage .append-objs').addEventListener('click', (e)
 document.querySelector('.obj-manage .delete-objs').addEventListener('click', (e) => {
     if (CircularsCount <= 1) return;
     // remove js objects
-    delete Circulars[Circulars.length - 1];
+    Circulars[Circulars.length-1].cleanUp();
     Circulars.pop();
 
     const infoBox = document.querySelector(`#info-container-${CircularsCount}`);
