@@ -194,16 +194,17 @@ function BlockInMotion(id) {
         let x = coordinateSet.x + correction;
         let y = coordinateSet.y + correction;
 
+        let dX = 0, dY = 0;
         if (isFocus) { // if ellipse circulates around the focus, shift
             let rad = coordinateSet.rad;
             if (Math.abs(coordinateSet.rx) >= Math.abs(coordinateSet.ry)) {
                 let c = Math.sqrt(coordinateSet.rx ** 2 - coordinateSet.ry ** 2);
-                var dX = c * Math.cos(rad);
-                var dY = c * Math.sin(rad);
+                dX = c * Math.cos(rad);
+                dY = c * Math.sin(rad);
             } else {
                 let c = Math.sqrt(coordinateSet.ry ** 2 - coordinateSet.rx ** 2);
-                var dX = c * Math.sin(-rad);
-                var dY = c * Math.cos(rad); // should also be -rad, but cos function is even
+                dX = c * Math.sin(-rad);
+                dY = c * Math.cos(rad); // should also be -rad, but cos function is even
             }
             x += dX;
             y += dY;
@@ -233,9 +234,7 @@ function BlockInMotion(id) {
         blockPrjElement.style.left = floatToPx(x);
 
         // displays the trajectory as the ball moves
-        redrawsTrajectory(coordinateSet.rx, coordinateSet.ry, coordinateSet.deg);
-        if (isFocus)
-            redrawsTrajectory(coordinateSet.rx, coordinateSet.ry, coordinateSet.deg, dX, dY);
+        redrawsTrajectory(coordinateSet.rx, coordinateSet.ry, coordinateSet.deg, dX, dY);
 
         rendered = setTimeout(rendersBlock, intervals);
     }
