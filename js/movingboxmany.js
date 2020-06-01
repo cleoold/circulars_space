@@ -19,51 +19,51 @@ oneClickGoBtn.style.display = 'none';
 oneClickResetBtn.style.display = 'none';
 oneClickBtnsSeparator.style.display = 'none';
 
-var prevObjSelect = [];
-var nextObjSelect = [];
-// var prevBtnHandlers = too lazy do not want to do it is not needed
-var nextBtnHandlers = [];
+const prevObjSelect = [];
+const nextObjSelect = [];
+// const prevBtnHandlers = too lazy do not want to do it is not needed
+const nextBtnHandlers = [];
 
-var circular1 = new BlockInMotion(1);
+const circular1 = new BlockInMotion(1);
 
 // manage multiple circulations (max 1+5=6)
-var CircularsCount = 1;
-var Circulars = [];
+let CircularsCount = 1;
+const Circulars = [];
 
 document.querySelector('.obj-manage .append-objs').addEventListener('click', (e) => {
     if (CircularsCount >= 6) return;
     ++CircularsCount;
 
     // create nodes
-    var clonedInfoContainer = infoContainer1.cloneNode(true);
+    const clonedInfoContainer = infoContainer1.cloneNode(true);
     clonedInfoContainer.id = `info-container-${CircularsCount}`;
     clonedInfoContainer.children[0].children[1].innerText = `Block ${CircularsCount}`;
     clonedInfoContainer.style.display = 'none';
     grandContainer.insertBefore(clonedInfoContainer, container);
 
-    var clonedMovingObj = movingObj1.cloneNode(true);
+    const clonedMovingObj = movingObj1.cloneNode(true);
     clonedMovingObj.id = `moving-obj-${CircularsCount}`;
     container.appendChild(clonedMovingObj);
 
-    var clonedMovingObjTrajectory = movingObjTrajectory1.cloneNode(true);
+    const clonedMovingObjTrajectory = movingObjTrajectory1.cloneNode(true);
     clonedMovingObjTrajectory.id = `moving-obj-trajectory-${CircularsCount}`;
     container.insertBefore(clonedMovingObjTrajectory, origin);
 
-    var clonedMovingObjProjection = movingObjProjection1.cloneNode();
+    const clonedMovingObjProjection = movingObjProjection1.cloneNode();
     clonedMovingObjProjection.id = `moving-obj-prj-${CircularsCount}`;
-    var clonedMovingObjProjectionContainer = document.createElement('div');
+    const clonedMovingObjProjectionContainer = document.createElement('div');
     clonedMovingObjProjectionContainer.setAttribute('class', 'projections');
     clonedMovingObjProjectionContainer.appendChild(clonedMovingObjProjection);
     grandContainer.insertBefore(clonedMovingObjProjectionContainer, objManageNode);
 
     // create moving block js objects
-    var bl = new BlockInMotion(CircularsCount);
+    const bl = new BlockInMotion(CircularsCount);
     document.querySelector(`#info-container-${CircularsCount} .set-color`).value =
         `rgba(${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},1)`;
     Circulars.push(bl);
 
     // displays the multi-ball control buttons
-    if (CircularsCount == 2) {
+    if (CircularsCount === 2) {
         oneClickGoBtn.style.display = '';
         oneClickResetBtn.style.display = '';
         oneClickBtnsSeparator.style.display = '';
@@ -71,7 +71,7 @@ document.querySelector('.obj-manage .append-objs').addEventListener('click', (e)
     //window.scrollBy(0, 299);
 
     // activates the switch-previous-next buttons
-    const cc = CircularsCount
+    const cc = CircularsCount;
     document.querySelector(`#info-container-${cc} .switch-obj-prev`).addEventListener('click', (e) => {
         document.querySelector(`#info-container-${cc}`).style.display = 'none';
         document.querySelector(`#info-container-${cc-1}`).style.display = 'grid';
@@ -104,7 +104,7 @@ document.querySelector('.obj-manage .delete-objs').addEventListener('click', (e)
     // if user is now at this page, move to the previous page
     if (amIAtThisPage) prevInfoBox.style.display = 'grid';
 
-    if (--CircularsCount == 1) {
+    if (--CircularsCount === 1) {
         // hides the multi-ball control buttons
         oneClickGoBtn.style.display = 'none';
         oneClickResetBtn.style.display = 'none';
@@ -114,11 +114,11 @@ document.querySelector('.obj-manage .delete-objs').addEventListener('click', (e)
 });
 
 document.querySelector('.obj-manage .objs-oneclick-go').addEventListener('click', (e) => {
-    var btns = document.querySelectorAll('.info-container .set-attr-go');
+    const btns = document.querySelectorAll('.info-container .set-attr-go');
     for (let each of btns) each.click();
 });
 
 document.querySelector('.obj-manage .objs-oneclick-reset').addEventListener('click', (e) => {
-    var btns = document.querySelectorAll('.info-container .set-attr-reset');
+    const btns = document.querySelectorAll('.info-container .set-attr-reset');
     for (let each of btns) each.click();
 });

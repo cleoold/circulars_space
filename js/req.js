@@ -11,14 +11,14 @@ let samplesShown = false;
 
 samplesClickDisplay.addEventListener('click', (e) => {
     if (!samplesShown) {
-        let urls = [
+        const urls = [
             './assets/uniformcircular1.gif',
             './assets/uniformcircular2.gif',
             './assets/uniformcircular3.gif',
             './assets/uniformcircular4.gif'
         ];
         for (let url of urls) {
-            let imgContainer = document.createElement('img');
+            const imgContainer = document.createElement('img');
             imgContainer.src = url;
             document.querySelector('.samples-display').appendChild(imgContainer);
         }

@@ -8,13 +8,13 @@ const pHtml = document.querySelector('html');
 
 // background change
 
-var bgChangeFlag = -1;
+let bgChangeFlag = -1;
 (() => {
     const colors = ['#30542c', '#232170', '#530a80', '#870c6d', '#873a0b'];
-    //var colorsLight = ['#4c9144', '#514db0', '#a06bc2', '#ab609b'];
+    //const colorsLight = ['#4c9144', '#514db0', '#a06bc2', '#ab609b'];
     let i = 0;
     bgChangeFlag = setTimeout(function loopBgColor() {
-        if (++i == 5) i = 0;
+        if (++i === 5) i = 0;
         pBody.style.backgroundColor = colors[i];
         pHtml.style.backgroundColor = colors[i];
         if (bgChangeFlag)
@@ -55,7 +55,7 @@ document.querySelector('.cancel-bg-change-and-enable-star').addEventListener('cl
     origin.style.width = '8px';
     origin.style.height = '8px';
     setTimeout(function loopSunColor() {
-        if (++i == 6) i =0;
+        if (++i === 6) i =0;
         origin.style.boxShadow = colors[i];
         origin.style.WebkitBoxShadow = colors[i];
         setTimeout(loopSunColor, 4000);

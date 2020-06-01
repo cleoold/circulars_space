@@ -10,19 +10,19 @@ const container = document.querySelector('div#container');
 const containerWidthText = document.querySelector('.container-width');
 const origin = document.querySelector('div#origin');
 
-var containerLength = 0;
+let containerLength = 0;
 
 function floatToPx(num) {
     return String(num) + 'px';
 }
 
 function parseFloat200(s) {
-    let res = parseFloat(s);
+    const res = parseFloat(s);
     return (isNaN(res))? Infinity : res;
 }
 
 function wrongInput(elem) {
-    let o = elem.style.backgroundColor;
+    const o = elem.style.backgroundColor;
     elem.style.backgroundColor = '#c98d8d';
     setTimeout(() => {
         elem.style.backgroundColor = o;
@@ -31,7 +31,7 @@ function wrongInput(elem) {
 
 function onChangeContainerSize(e) {
     containerLength = parseFloat(window.getComputedStyle(container).width);
-    var containerLengthPx = floatToPx(containerLength);
+    const containerLengthPx = floatToPx(containerLength);
     container.style.height = containerLengthPx;
     containerWidthText.value = containerLengthPx;
 
@@ -77,10 +77,10 @@ function Block(initOffset = 0, initPeriod = 0, initSemiX = 0, initSemiY = 0, ini
      *         rad:rotation angle in radians, deg:rotation angle in deg
      */
     this.yieldRotated = (t) => {
-        let x = this.yieldX(t);
-        let y = this.yieldY(t);
-        let deg = this.rotate(t);
-        let rad = degToRadian(deg);
+        const x = this.yieldX(t);
+        const y = this.yieldY(t);
+        const deg = this.rotate(t);
+        const rad = degToRadian(deg);
         return {
             x: rotateX(x,y,rad),
             y: rotateY(x,y,rad),
@@ -94,7 +94,7 @@ function Block(initOffset = 0, initPeriod = 0, initSemiX = 0, initSemiY = 0, ini
 
 // moving block area
 
-var intervals = 40;
+let intervals = 40;
 
 /**
  * the rendered block
@@ -102,10 +102,10 @@ var intervals = 40;
  * @param {Number} id specifies the index number of the spawned block
  * @return {BlockInMotion} a newly spawned moving block
  * 
- * usage var x = new BlockInMotion(1)
+ * usage let x = new BlockInMotion(1)
  */
 function BlockInMotion(id) {
-    var block1 = new Block();
+    let block1 = new Block();
     const blockElement = document.querySelector(`div#moving-obj-${id}`);
     const blockTrajectoryElement = document.querySelector(`div#moving-obj-trajectory-${id}`);
     const blockPrjElement = document.querySelector(`div#moving-obj-prj-${id}`);
@@ -124,14 +124,14 @@ function BlockInMotion(id) {
     const setRotateAroundSelect = document.querySelector(`#info-container-${id} .set-rotate-around`);
     const enterBtn = document.querySelector(`#info-container-${id} .set-attr-go`);
     const resetBtn = document.querySelector(`#info-container-${id} .set-attr-reset`);
-    var maxRadiusInContainer = 0;
-    var timer = 0;
-    var rendered = null;
-    var isFocus = false;
+    let maxRadiusInContainer = 0;
+    let timer = 0;
+    let rendered = null;
+    let isFocus = false;
 
-    var dragFlag = false;
-    var blockElementIniX = 0;
-    var blockElementIniY = 0;
+    let dragFlag = false;
+    let blockElementIniX = 0;
+    let blockElementIniY = 0;
 
     // set default values of the circle
     function setDefaultValsForCircle(e, resetColor=true) {
@@ -187,16 +187,16 @@ function BlockInMotion(id) {
     // also renders semiX/semiY trajectory                                                      // |
     function rendersBlock() {                                                                   // |
         timer += intervals;                                                                     // |
-        let realTimer = timer / 1000; // intriguing geometry. i do not like                     // |
-        let o = parseFloat(blockElement.style.width);
-        let correction = maxRadiusInContainer - o / 2;
+        const realTimer = timer / 1000; // intriguing geometry. i do not like                     // |
+        const o = parseFloat(blockElement.style.width);
+        const correction = maxRadiusInContainer - o / 2;
         const coordinateSet = block1.yieldRotated(realTimer);
         let x = coordinateSet.x + correction;
         let y = coordinateSet.y + correction;
 
         let dX = 0, dY = 0;
         if (isFocus) { // if ellipse circulates around the focus, shift
-            let rad = coordinateSet.rad;
+            const rad = coordinateSet.rad;
             if (Math.abs(coordinateSet.rx) >= Math.abs(coordinateSet.ry)) {
                 let c = Math.sqrt(coordinateSet.rx ** 2 - coordinateSet.ry ** 2);
                 dX = c * Math.cos(rad);
@@ -245,7 +245,7 @@ function BlockInMotion(id) {
         semiY = Math.abs(semiY);
         blockTrajectoryElement.style.width = floatToPx(semiX * 2);
         blockTrajectoryElement.style.height = floatToPx(semiY * 2);
-        let leftTopPos = parseFloat(window.getComputedStyle(container).width) / 2;
+        const leftTopPos = parseFloat(window.getComputedStyle(container).width) / 2;
         blockTrajectoryElement.style.left = floatToPx(leftTopPos - semiX + dX);
         blockTrajectoryElement.style.top = floatToPx(leftTopPos - semiY + dY);
         blockTrajectoryElement.style.transform = `rotate(${deg}deg)`;
@@ -284,15 +284,15 @@ function BlockInMotion(id) {
     // by changing the 'rotate around', we can make the ball circulate around origin, or focus (apply to ellipses)
     //     updates the isFocus
     setRotateAroundSelect.addEventListener('change', (e) => {
-        let option = setRotateAroundSelect.value;
-        if (option == 'origin') isFocus = false;
+        const option = setRotateAroundSelect.value;
+        if (option === 'origin') isFocus = false;
         else isFocus = true;
     });
 
     // by clicking go button, start rotating the ball
     enterBtn.addEventListener('click', function triggerCircleMotion(e) {
         // check color and size boxes
-        const setSizeTextVal = parseFloat(setSizeText.value)
+        const setSizeTextVal = parseFloat(setSizeText.value);
         if (setSizeTextVal <= 30 && setSizeTextVal >= 5) {
             enterBtn.style.backgroundColor = setColorText.value;
 
@@ -306,10 +306,10 @@ function BlockInMotion(id) {
             return;
         }
         // check period, semiX/semiY, rotation boxes
-        let TNotValid = isNaN(parseFloat(setPeriodText.value));
-        let ANotValid = isNaN(parseFloat(setRotateText.value)) || Math.abs(parseFloat(setRotateText.value)) > 360;
-        let XToLarge = Math.abs(parseFloat200(setSemiXText.value)) > maxRadiusInContainer;
-        let YToLarge = Math.abs(parseFloat200(setSemiYText.value)) > maxRadiusInContainer;
+        const TNotValid = isNaN(parseFloat(setPeriodText.value));
+        const ANotValid = isNaN(parseFloat(setRotateText.value)) || Math.abs(parseFloat(setRotateText.value)) > 360;
+        const XToLarge = Math.abs(parseFloat200(setSemiXText.value)) > maxRadiusInContainer;
+        const YToLarge = Math.abs(parseFloat200(setSemiYText.value)) > maxRadiusInContainer;
         if (!XToLarge && !YToLarge && !TNotValid && !ANotValid) {
             block1.initPeriod = parseFloat(setPeriodText.value);
             block1.initSemiX = parseFloat(setSemiXText.value);
@@ -332,18 +332,18 @@ function BlockInMotion(id) {
         if (!setSemiXLDeltaText.value) setSemiXLDeltaText.value = 0;
         if (!setSemiYLDeltaText.value) setSemiYLDeltaText.value = 0;
         if (!setRotateLDeltaText.value) setRotateLDeltaText.value = 0;
-        let TLDNotValid = isNaN(parseFloat(setPeriodLDeltaText.value));
-        let ALDNotValid = isNaN(parseFloat(setRotateLDeltaText.value)) || Math.abs(parseFloat(setRotateLDeltaText.value)) > 360;
-        let XLDToLarge = Math.abs(parseFloat200(setSemiXLDeltaText.value)) > maxRadiusInContainer;
-        let YLDToLarge = Math.abs(parseFloat200(setSemiYLDeltaText.value)) > maxRadiusInContainer;
+        const TLDNotValid = isNaN(parseFloat(setPeriodLDeltaText.value));
+        const ALDNotValid = isNaN(parseFloat(setRotateLDeltaText.value)) || Math.abs(parseFloat(setRotateLDeltaText.value)) > 360;
+        const XLDToLarge = Math.abs(parseFloat200(setSemiXLDeltaText.value)) > maxRadiusInContainer;
+        const YLDToLarge = Math.abs(parseFloat200(setSemiYLDeltaText.value)) > maxRadiusInContainer;
         if (!XLDToLarge && !YLDToLarge && !TLDNotValid && !ALDNotValid) {
-            var periodLD = parseFloat(setPeriodLDeltaText.value);
+            const periodLD = parseFloat(setPeriodLDeltaText.value);
             block1.period = (t) => block1.initPeriod + t * periodLD;
-            var semiXLD = parseFloat(setSemiXLDeltaText.value);
+            const semiXLD = parseFloat(setSemiXLDeltaText.value);
             block1.semiX = (t) => block1.initSemiX + t * semiXLD;
-            var semiYLD = parseFloat(setSemiYLDeltaText.value);
+            const semiYLD = parseFloat(setSemiYLDeltaText.value);
             block1.semiY = (t) => block1.initSemiY + t * semiYLD;
-            var rotateLD = parseFloat(setRotateLDeltaText.value);
+            const rotateLD = parseFloat(setRotateLDeltaText.value);
             block1.rotate = (t) => block1.initRotate + t * rotateLD;
 
             setPeriodLDeltaText.value = periodLD;
@@ -390,9 +390,9 @@ function BlockInMotion(id) {
         if (dragFlag) {
             e = e || window.event;
             e.preventDefault();
-            let o = parseFloat(blockElement.style.width);
-            let newX = (e.clientX || e.touches[0].clientX) - blockElementIniX;
-            let newY = (e.clientY || e.touches[0].clientY) - blockElementIniY;
+            const o = parseFloat(blockElement.style.width);
+            const newX = (e.clientX || e.touches[0].clientX) - blockElementIniX;
+            const newY = (e.clientY || e.touches[0].clientY) - blockElementIniY;
             if (blockOffBoundary(newX, newY, o)) return;
             blockElement.style.left = floatToPx(newX);
             blockElement.style.top = floatToPx(newY);
@@ -401,9 +401,9 @@ function BlockInMotion(id) {
 
             blockPrjElement.style.left = floatToPx(newX);
 
-            let dX = newX - parseFloat(origin.style.left);
-            let dY = newY - parseFloat(origin.style.top);
-            let newRadius = Math.sqrt((dX ** 2 + dY ** 2));
+            const dX = newX - parseFloat(origin.style.left);
+            const dY = newY - parseFloat(origin.style.top);
+            const newRadius = Math.sqrt((dX ** 2 + dY ** 2));
             setSemiXText.value = newRadius;
             setSemiYText.value = newRadius;
             block1.offset = -Math.atan2(dY, dX);
@@ -440,7 +440,7 @@ function BlockInMotion(id) {
 const setFpsText = document.querySelector('.shared-info-container-bo > span:nth-child(2)');
 
 document.querySelector('.shared-info-container-bo .fps-decrease').addEventListener('click', (e) => {
-    let fps = parseInt(setFpsText.innerText);
+    const fps = parseInt(setFpsText.innerText);
     if (fps <= 5) {
         setFpsText.innerText = 5;
         return;
@@ -449,7 +449,7 @@ document.querySelector('.shared-info-container-bo .fps-decrease').addEventListen
     setFpsText.innerText = fps - ((fps >= 40) ? 10 : 5);
 });
 document.querySelector('.shared-info-container-bo .fps-increase').addEventListener('click', (e) => {
-    let fps = parseInt(setFpsText.innerText);
+    const fps = parseInt(setFpsText.innerText);
     if (fps >= 150) {
         setFpsText.innerText = 150;
         return;
@@ -457,5 +457,3 @@ document.querySelector('.shared-info-container-bo .fps-increase').addEventListen
     intervals = parseInt(1000 / fps);
     setFpsText.innerText = fps + ((fps >= 40) ? 10 : 5);
 });
-
-
